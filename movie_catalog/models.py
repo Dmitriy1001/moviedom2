@@ -12,7 +12,8 @@ class Movie(models.Model):
         verbose_name='Категория'
     )
     title = models.CharField(max_length=255, verbose_name='Название')
-    tagline = models.CharField(max_length=255, verbose_name='Слоган')
+    slug = models.SlugField(unique=True, verbose_name='Слаг')
+    tagline = models.CharField(max_length=255, blank=True, verbose_name='Слоган')
     poster = models.ImageField(upload_to='posters/', verbose_name='Постер')
     genre = models.ManyToManyField('Genre', related_name='movies', verbose_name='Жанр')
     country = models.ManyToManyField('Country', related_name='movies', verbose_name='Страна')
@@ -20,7 +21,7 @@ class Movie(models.Model):
     actors = models.ManyToManyField('Actor', related_name='movies', verbose_name='Актеры')
     description = models.TextField(verbose_name='Описание')
     year = models.PositiveSmallIntegerField(verbose_name='Год')
-    world_premiere = models.DateTimeField(verbose_name='Премьера в мире')
+    world_premiere = models.DateField(verbose_name='Премьера в мире')
     budget = models.PositiveIntegerField(default=0, verbose_name='Бюджет')
     fees = models.PositiveIntegerField(default=0, verbose_name='Сборы')
     moderation = models.BooleanField(default=False, verbose_name='Модерация')
@@ -72,7 +73,7 @@ class Country(models.Model):
 class Director(models.Model):
     name = models.CharField(unique=True, max_length=255, verbose_name='Имя')
     slug = models.SlugField(unique=True, verbose_name='Слаг')
-    photo = models.ImageField(upload_to='directors/', null=True, verbose_name='Фото')
+    photo = models.ImageField(upload_to='directors/', blank=True, null=True, verbose_name='Фото')
 
     class Meta:
         verbose_name = 'Режиссера'
@@ -85,7 +86,7 @@ class Director(models.Model):
 class Actor(models.Model):
     name = models.CharField(unique=True, max_length=255, verbose_name='Имя')
     slug = models.SlugField(unique=True, verbose_name='Слаг')
-    photo = models.ImageField(upload_to='actors/', null=True, verbose_name='Фото')
+    photo = models.ImageField(upload_to='actors/', blank=True, null=True, verbose_name='Фото')
 
     class Meta:
         verbose_name = 'Актера'
