@@ -1,0 +1,47 @@
+{% load movie_filters %}
+
+<section class="home home--bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="home__title"><b>Топ фильмов</b> за год</h1>
+                <button class="home__nav home__nav--prev" type="button">
+                    <i class="icon ion-ios-arrow-round-back"></i>
+                </button>
+                <button class="home__nav home__nav--next" type="button">
+                    <i class="icon ion-ios-arrow-round-forward"></i>
+                </button>
+            </div>
+
+            <div class="col-12">
+                <div class="owl-carousel home__carousel">
+                    {% for movie in top_movies_for_year %}
+                        <div class="item">
+                            <!-- card -->
+                            <div class="card card--big">
+                                <div class="card__cover" style="cursor: pointer;">
+                                    <img src="{{movie.poster.url}}" alt="">
+                                    <a href="#" class="">
+                                        <i class="icon"></i>
+                                    </a>
+                                </div>
+                                <div class="card__content">
+                                    <h3 class="card__title"><a href="#">{{movie}}</a></h3>
+                                    <span class="card__category">
+                                        {% for genre in movie.genre.all %}
+                                            <a href="#">{{genre}}</a>
+                                        {% endfor %}
+                                    </span>
+                                    <span class="card__rate">
+                                        <i class="icon ion-ios-star"></i>{{movie.avg_rating|round_number:1}}
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- end card -->
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

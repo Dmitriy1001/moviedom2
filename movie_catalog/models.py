@@ -25,11 +25,13 @@ class Movie(models.Model):
     world_premiere = models.DateField(verbose_name='Премьера в мире')
     budget = models.PositiveIntegerField(default=0, verbose_name='Бюджет')
     fees = models.PositiveIntegerField(default=0, verbose_name='Сборы')
+    available = models.BooleanField(default=True, verbose_name='Доступен')
     moderation = models.BooleanField(default=False, verbose_name='Модерация')
 
     class Meta:
         verbose_name = 'Фильм'
         verbose_name_plural = 'Фильмы'
+        ordering = ('-world_premiere',)
 
     def __str__(self):
         return self.title

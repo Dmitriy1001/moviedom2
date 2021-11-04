@@ -11,6 +11,7 @@ class Index(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # top movies
         current_date = datetime.today()
         current_date_minus_year = datetime(
             current_date.year - 1,
@@ -18,11 +19,29 @@ class Index(TemplateView):
             current_date.day - (1 if current_date.month == 2 and current_date.day == 29 else 0),
         )
         context['top_movies_for_year'] = (
-            Movie.objects.filter(world_premiere__range=(current_date_minus_year, current_date))
+            Movie.objects.filter(
+                world_premiere__range=(current_date_minus_year, current_date),
+                available=True,
+                moderation=True,
+            )
             .annotate(avg_rating=Avg('ratings__star__number'))
             .order_by('-avg_rating')
         )[:10]
-        context['new_films'] = Movie.objects.filter(category__slug='films')
-        context['new_cartoons'] = Movie.objects.filter(category__slug='cartoons')
-        context['new_series'] = Movie.objects.filter(category__slug='series')
+        # new movies
+        context['new_all'] = (
+            Movie.objects.filter(available=True, moderation=True)
+            .annotate(avg_rating=Avg('ratings__star__number'))
+        )
+        context['new_films'] = (
+            Movie.objects.filter(available=True, moderation=True, category__slug='films')
+            .annotate(avg_rating=Avg('ratings__star__number'))
+        )
+        context['new_cartoons'] = (
+            Movie.objects.filter(available=True, moderation=True, category__slug='cartoons')
+            .annotate(avg_rating=Avg('ratings__star__number'))
+        )
+        context['new_series'] = (
+            Movie.objects.filter(available=True, moderation=True, category__slug='series')
+            .annotate(avg_rating=Avg('ratings__star__number'))
+        )
         return context
