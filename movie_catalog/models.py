@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from django.db import models
 
@@ -184,6 +185,10 @@ class Rating(models.Model):
     class Meta:
         verbose_name = 'Рейтинг'
         verbose_name_plural = 'Рейтинги'
+
+    def clean(self):
+        if Rating.objects.filter(user=self.user, movie=self.movie):
+            raise ValidationError('Пользователь уже поставил оценку этому фильму')
 
     def __str__(self):
         return f'{self.star} - {self.movie}'

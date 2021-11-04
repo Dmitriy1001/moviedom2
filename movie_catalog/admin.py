@@ -50,7 +50,7 @@ class RatingStarAdmin(admin.ModelAdmin):
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('movie', 'star', 'user')
 
 
 @admin.register(MovieShot)
