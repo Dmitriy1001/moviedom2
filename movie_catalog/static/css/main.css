@@ -1315,9 +1315,9 @@ ul {
   color: #fff;
   margin: 0;
   overflow: hidden;
-  white-space: nowrap;
+  white-space: normal;
   -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   word-wrap: break-word;
 }
 .card__title a {

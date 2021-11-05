@@ -31,17 +31,19 @@ class Index(TemplateView):
         context['new_all'] = (
             Movie.objects.filter(available=True, moderation=True)
             .annotate(avg_rating=Avg('ratings__star__number'))
-        )
+        )[:6]
         context['new_films'] = (
             Movie.objects.filter(available=True, moderation=True, category__slug='films')
             .annotate(avg_rating=Avg('ratings__star__number'))
-        )
+        )[:6]
         context['new_cartoons'] = (
             Movie.objects.filter(available=True, moderation=True, category__slug='cartoons')
             .annotate(avg_rating=Avg('ratings__star__number'))
-        )
+        )[:6]
         context['new_series'] = (
             Movie.objects.filter(available=True, moderation=True, category__slug='series')
             .annotate(avg_rating=Avg('ratings__star__number'))
-        )
+        )[:6]
+        # expected movies
+        context['expected_movies'] = Movie.objects.filter(available=False, moderation=True)
         return context

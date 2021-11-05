@@ -45,7 +45,7 @@
 					<div class="col-12">
 						<div class="header__content">
 							<!-- header logo -->
-							<a href="" class="header__logo">
+							<a href="{% url 'index' %}" class="header__logo">
 								<img src="{% static 'img/logo2.svg' %}" alt="">
 							</a>
 							<!-- end header logo -->
@@ -54,7 +54,7 @@
 							<ul class="header__nav">
 								<!-- dropdown -->
 								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuHome" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Главная</a>
+									<a class="dropdown-toggle header__nav-link" href="{% url 'index' %}" role="button" id="dropdownMenuHome" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Главная</a>
 								</li>
 								<!-- end dropdown -->
 
