@@ -25,6 +25,17 @@ class Movie(models.Model):
     world_premiere = models.DateField(verbose_name='Премьера в мире')
     budget = models.PositiveIntegerField(default=0, verbose_name='Бюджет')
     fees = models.PositiveIntegerField(default=0, verbose_name='Сборы')
+    age_limit = models.CharField(
+        max_length=10,
+        choices=[
+            ('0', '0'),
+            ('12', '12'),
+            ('16', '16'),
+            ('18', '18'),
+        ],
+        default='0',
+        verbose_name='Возрастное ограничение',
+    )
     available = models.BooleanField(default=True, verbose_name='Доступен')
     moderation = models.BooleanField(default=False, verbose_name='Модерация')
 
