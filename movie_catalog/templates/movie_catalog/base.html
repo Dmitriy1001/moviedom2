@@ -64,7 +64,9 @@
 									{% get_categories as category_list %}
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
 										{% for category in category_list %}
-											<li><a href="">{{category}}</a></li>
+											<li>
+												<a href="{% url 'movie_list' category=category.slug %}">{{category}}</a>
+											</li>
 										{% endfor %}
 									</ul>
 								</li>

@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db.models import Avg
 from django.views.generic import TemplateView, ListView
 
-from movie_catalog.models import Movie
+from movie_catalog.models import Movie, Category
 
 
 class Index(TemplateView):
@@ -46,4 +46,23 @@ class Index(TemplateView):
         )[:6]
         # expected movies
         context['expected_movies'] = Movie.objects.filter(available=False, moderation=True)
+        return context
+
+
+class MovieList(ListView):
+    model = Movie
+
+    def get_queryset(self):
+        return (
+            Movie.objects.filter(
+                available=True,
+                moderation=True,
+                category__slug=self.kwargs['category'],
+            )
+            .annotate(avg_rating=Avg('ratings__star__number'))
+        )
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.get(slug=self.kwargs['category']).name
         return context
