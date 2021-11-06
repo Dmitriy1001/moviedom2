@@ -44,9 +44,11 @@
 											</span>
 
 											<div class="card__wrap">
-												<span class="card__rate">
-													<i class="icon ion-ios-star"></i>{{movie.avg_rating|round_number:1}}
-												</span>
+												{% if movie.avg_rating %}
+													<span class="card__rate">
+														<i class="icon ion-ios-star"></i>{{movie.avg_rating|round_number:1}}
+													</span>
+												{% endif %}
 												{% if movie.age_limit != '0' %}
 													<ul class="card__list">
 														<li>{{movie.age_limit}}+</li>
@@ -71,7 +73,9 @@
 				{% endif %}
 
 				<!-- paginator -->
-				{% include 'movie_catalog/includes/paginator.html' %}
+				{% if page_obj.has_other_pages %}
+					{% include 'movie_catalog/includes/paginator.html' %}
+				{% endif %}
 				<!-- end paginator -->
 
 			</div>

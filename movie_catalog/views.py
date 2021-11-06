@@ -53,6 +53,7 @@ class Index(TemplateView):
 
 class MovieList(ListView):
     model = Movie
+    paginate_by = 8
     extra_context = {'page': 'movie_list'}
 
     def get_queryset(self):
