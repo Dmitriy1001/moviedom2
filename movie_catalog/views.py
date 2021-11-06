@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db.models import Avg
+from django.http import Http404
 from django.views.generic import TemplateView, ListView
 
 from movie_catalog.models import Movie, Category
@@ -8,6 +9,7 @@ from movie_catalog.models import Movie, Category
 
 class Index(TemplateView):
     template_name = 'movie_catalog/index.html'
+    extra_context = {'page': 'index'}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,18 +53,29 @@ class Index(TemplateView):
 
 class MovieList(ListView):
     model = Movie
+    extra_context = {'page': 'movie_list'}
 
     def get_queryset(self):
-        return (
-            Movie.objects.filter(
-                available=True,
-                moderation=True,
-                category__slug=self.kwargs['category'],
-            )
+        movies = (
+            Movie.objects.filter(available=True, moderation=True)
             .annotate(avg_rating=Avg('ratings__star__number'))
         )
+        if self.kwargs['category'] == 'all':
+            self.kwargs['title'] = None
+            return movies
+        try:
+            category = Category.objects.get(slug=self.kwargs['category'])
+            self.kwargs['title'] = category.name
+            return movies.filter(category=category)
+        except Category.DoesNotExist:
+            raise Http404
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = Category.objects.get(slug=self.kwargs['category']).name
+        context['title'] = self.kwargs['title']
         return context
+
+
+class About(TemplateView):
+    template_name = 'movie_catalog/about.html'
+    extra_context = {'page': 'about'}

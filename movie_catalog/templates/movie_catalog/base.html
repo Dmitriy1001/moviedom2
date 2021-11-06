@@ -54,26 +54,37 @@
 							<ul class="header__nav">
 								<!-- dropdown -->
 								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="{% url 'index' %}" role="button" id="dropdownMenuHome" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Главная</a>
+									<a href="{% url 'index' %}" class="header__nav-link {% if page == 'index' %}header__nav-link--active{% endif %}">
+										Главная
+									</a>
 								</li>
 								<!-- end dropdown -->
 
 								<!-- dropdown -->
 								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категории</a>
+									<a class="dropdown-toggle header__nav-link {% if page == 'movie_list' %}header__nav-link--active{% endif %}" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категории</a>
 									{% get_categories as category_list %}
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
 										{% for category in category_list %}
 											<li>
-												<a href="{% url 'movie_list' category=category.slug %}">{{category}}</a>
+												<a href="{% url 'movie_list' category=category.slug %}" style="{% if category.name == title %}color: #ff55a5;{% endif %}">
+													{{category}}
+												</a>
 											</li>
 										{% endfor %}
+										<li>
+											<a href="{% url 'movie_list' category='all' %}" style="{% if not title and page == 'movie_list' %}color: #ff55a5;{% endif %}">
+												Все категории
+											</a>
+										</li>
 									</ul>
 								</li>
 								<!-- end dropdown -->
 
 								<li class="header__nav-item">
-									<a href="" class="header__nav-link">О нас</a>
+									<a href="{% url 'about' %}" class="header__nav-link {% if page == 'about' %}header__nav-link--active{% endif %}">
+										О нас
+									</a>
 								</li>
 
 								<!-- dropdown -->

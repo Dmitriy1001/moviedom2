@@ -81,12 +81,14 @@
                             </div>
                             <!-- end card -->
                         {% endfor %}
-                        <div class="col-12">
-					        <a href="#" class="section__btn">Показать все</a>
-				        </div>
                     {% else %}
                         <div><h3>Нет новинок</h3></div>
                     {% endif %}
+                    <div class="col-12">
+                        <a href="{% url 'movie_list' category='all' %}" class="section__btn">
+                            Показать все
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -119,12 +121,14 @@
                             </div>
                             <!-- end card -->
                         {% endfor %}
-                        <div class="col-12">
-					        <a href="#" class="section__btn">Все фильмы</a>
-				        </div>
                     {% else %}
                         <div><h3 style="color:white;">Нет новых фильмов</h3></div>
                     {% endif %}
+                    <div class="col-12">
+                        <a href="{% url 'movie_list' category='films' %}" class="section__btn">
+                            Все фильмы
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -157,12 +161,14 @@
                             </div>
                             <!-- end card -->
                         {% endfor %}
-                        <div class="col-12">
-                            <a href="#" class="section__btn">Все мультфильмы</a>
-                        </div>
                     {% else %}
                         <div><h3 style="color:white;">Нет новых мультфильмов</h3></div>
                     {% endif %}
+                    <div class="col-12">
+                        <a href="{% url 'movie_list' category='cartoons' %}" class="section__btn">
+                            Все мультфильмы
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -195,10 +201,14 @@
                             </div>
                             <!-- end card -->
                         {% endfor %}
-                        <div class="col-12"><a href="#" class="section__btn">Все сериалы</a></div>
                     {% else %}
                         <div><h3 style="color:white;">Нет новых сериалов</h3></div>
                     {% endif %}
+                    <div class="col-12">
+                        <a href="{% url 'movie_list' category='series' %}" class="section__btn">
+                            Все сериалы
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

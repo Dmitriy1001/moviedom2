@@ -1,0 +1,34 @@
+{% load static %}
+
+<section class="section section--first section--bg" data-bg="{% static 'img/section/section.jpg' %}">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section__wrap">
+          <!-- section title -->
+          <h2 class="section__title">
+            {% if not title and page == 'movie_list' %} Все категории
+            {% elif not title and page == 'about' %} Про нас
+            {% else %} {{title}}
+            {% endif %}
+          </h2>
+          <!-- end section title -->
+
+          <!-- breadcrumb -->
+          <ul class="breadcrumb">
+            <li class="breadcrumb__item">
+              <a href="{% url 'index' %}">Главная</a>
+            </li>
+            <li class="breadcrumb__item breadcrumb__item--active">
+              {% if not title and page == 'movie_list' %} Все категории
+              {% elif not title and page == 'about' %} Про нас
+              {% else %} {{title}}
+              {% endif %}
+            </li>
+          </ul>
+          <!-- end breadcrumb -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
