@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from django.db.models import Avg
+from django.db.models import Avg, Min, Max
 from django.http import Http404
 from django.views.generic import TemplateView, ListView
 
-from movie_catalog.models import Movie, Category
+from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre
 
 
 class Index(TemplateView):
@@ -70,6 +70,33 @@ class MovieList(ListView):
             return movies.filter(category=category)
         except Category.DoesNotExist:
             raise Http404
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.kwargs.get('title')
+        return context
+
+
+class Filter(MovieList):
+    models = {'genre': Genre, 'country': Country, 'director': Director, 'actor': Actor}
+    paginate_by = 12
+    extra_context = {'page': 'movie_grid'}
+
+    def get_queryset(self):
+        print(type(self.kwargs['instance']), '!!!')
+        if self.kwargs['model'] != 'rating':
+            model = self.models[self.kwargs['model']]
+            model_instance = model.objects.get(slug=self.kwargs['instance'])
+            movies = model_instance.movies.annotate(avg_rating=Avg('ratings__star__number'))
+            self.kwargs['title'] = model_instance.name
+        else:
+            star = int(float(self.kwargs['instance']))
+            movies = (
+                Movie.objects.annotate(avg_rating=Avg('ratings__star__number'))
+                .filter(avg_rating__range=(star, star+0.9))
+            )
+            self.kwargs['title'] = star
+        return movies.filter(available=True, moderation=True)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

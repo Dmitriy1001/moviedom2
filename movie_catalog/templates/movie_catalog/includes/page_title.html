@@ -1,4 +1,4 @@
-{% load static %}
+{% load static movie_filters %}
 
 <section class="section section--first section--bg" data-bg="{% static 'img/section/section.jpg' %}">
   <div class="container">
@@ -9,6 +9,14 @@
           <h2 class="section__title">
             {% if not title and page == 'movie_list' %} Все категории
             {% elif not title and page == 'about' %} Про нас
+            {% elif page == 'movie_grid' %}
+              {% if title|isnumber %}
+			    {% if title != 5 %}Фильмы с рейтингом от {{title}} до {{title|add:1}}
+			    {% else %}Фильмы с рейтингом {{title}}
+			    {% endif %}
+		      {% else %}
+			    {{title}}
+		      {% endif %}
             {% else %} {{title}}
             {% endif %}
           </h2>
@@ -22,6 +30,14 @@
             <li class="breadcrumb__item breadcrumb__item--active">
               {% if not title and page == 'movie_list' %} Все категории
               {% elif not title and page == 'about' %} Про нас
+              {% elif page == 'movie_grid' %}
+                {% if title|isnumber %}
+                  {% if title != 5 %}рейтинг {{title}} - {{title|add:1}}
+                  {% else %}рейтинг {{title}}
+                  {% endif %}
+                {% else %}
+                  {{title}}
+                {% endif %}
               {% else %} {{title}}
               {% endif %}
             </li>

@@ -167,10 +167,14 @@ class Review(models.Model):
 
 class RatingStar(models.Model):
     number = models.PositiveSmallIntegerField(default=0, verbose_name='Число')
+    slug = models.SlugField(blank=True)
 
     class Meta:
         verbose_name = 'Звезду рейтинга'
         verbose_name_plural = 'Звезды рейтинга'
+
+    def get_movies(self, number):
+        return Movie.objects.filter(ratings__star__number=int(number))
 
     def __str__(self):
         return str(self.number)

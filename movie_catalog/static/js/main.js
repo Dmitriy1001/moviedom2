@@ -130,13 +130,13 @@ $(document).ready(function () {
 	$('.filter__item-menu li').each( function() {
 		$(this).attr('data-value', $(this).text().toLowerCase());
 	});
-
-	$('.filter__item-menu li').on('click', function() {
-		var text = $(this).text();
-		var item = $(this);
-		var id = item.closest('.filter__item').attr('id');
-		$('#'+id).find('.filter__item-btn input').val(text);
-	});
+//
+//	$('.filter__item-menu li').on('click', function() {
+//		var text = $(this).text();
+//		var item = $(this);
+//		var id = item.closest('.filter__item').attr('id');
+//		$('#'+id).find('.filter__item-btn input').val(text);
+//	});
 
 	/*==============================
 	Scroll bar
@@ -387,16 +387,17 @@ $(document).ready(function () {
 	==============================*/
 	/*1*/
 	function initializeFirstSlider() {
-		if ($('#filter__years').length) {
+	    var years_range = JSON.parse(document.getElementById('years_range').textContent);
+        if ($('#filter__years').length) {
 			var firstSlider = document.getElementById('filter__years');
 			noUiSlider.create(firstSlider, {
 				range: {
-					'min': 2000,
-					'max': 2018
+					'min': years_range.start,
+					'max': years_range.end
 				},
 				step: 1,
 				connect: true,
-				start: [2005, 2015],
+				start: [years_range.start, years_range.end],
 				format: wNumb({
 					decimals: 0,
 				})
@@ -421,12 +422,12 @@ $(document).ready(function () {
 			var secondSlider = document.getElementById('filter__imbd');
 			noUiSlider.create(secondSlider, {
 				range: {
-					'min': 0,
-					'max': 10
+					'min': 1,
+					'max': 5
 				},
 				step: 0.1,
 				connect: true,
-				start: [2.5, 8.6],
+				start: [1, 5],
 				format: wNumb({
 					decimals: 1,
 				})

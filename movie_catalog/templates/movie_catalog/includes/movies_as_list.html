@@ -1,0 +1,66 @@
+{% load movie_filters %}
+
+<div class="catalog">
+    <div class="container">
+        <div class="row">
+            {% if movie_list %}
+
+                {% for movie in movie_list %}
+                    <!-- card -->
+                    <div class="col-6 col-sm-12 col-lg-6">
+                        <div class="card card--list">
+                            <div class="row">
+                                <div class="col-12 col-sm-4">
+                                    <div class="card__cover" style="cursor:pointer;">
+                                        <img src="{{movie.poster.url}}" alt="">
+                                        <a href="#" class="">
+                                            <i class="icon"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-8">
+                                    <div class="card__content">
+                                        <h3 class="card__title"><a href="#">{{movie}}</a></h3>
+                                        <span class="card__category">
+                                            {% for genre in movie.genre.all %}
+                                             <a href="{% url 'filter' model='genre' instance=genre.slug %}">
+                                                 {{genre}}
+                                             </a>
+                                            {% endfor %}
+                                        </span>
+
+                                        <div class="card__wrap">
+                                            {% if movie.avg_rating %}
+                                                <a href="{% url 'filter' model='rating' instance=movie.avg_rating %}">
+                                                    <span class="card__rate">
+                                                        <i class="icon ion-ios-star"></i>{{movie.avg_rating|round_number:1}}
+                                                    </span>
+                                                </a>
+                                            {% endif %}
+                                            {% if movie.age_limit != '0' %}
+                                            <ul class="card__list">
+                                                <li>{{movie.age_limit}}+</li>
+                                            </ul>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="card__description">
+                                            <p>{{movie.description|first_words:25}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end card -->
+                {% endfor %}
+
+            {% else %}
+                <div>
+                    <h2 style="color:white;">Здесь пока ничего нет... но скоро появится </h2>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
