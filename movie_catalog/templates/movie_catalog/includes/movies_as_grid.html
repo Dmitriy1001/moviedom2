@@ -49,7 +49,11 @@
 
             {% else %}
                 <div>
-                    <h2 style="color:white;">Здесь пока ничего нет... но скоро появится </h2>
+                    {% if search %}
+                        <h2 style="color:white;">По вашему запросу ничего не найдено</h2>
+                    {% else %}
+                        <h2 style="color:white;">Здесь пока ничего нет... но скоро появится</h2>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

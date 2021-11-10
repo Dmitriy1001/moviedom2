@@ -128,18 +128,7 @@
 		</div>
 
 		<!-- header search -->
-		<form action="#" class="header__search">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="header__search-content">
-							<input type="text" placeholder="Введите название фильма или слова, которые могут быть в описании к фильму">
-							<button type="button">поиск</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
+		{% include 'movie_catalog/includes/search.html' %}
 		<!-- end header search -->
 	</header>
 	<!-- end header -->

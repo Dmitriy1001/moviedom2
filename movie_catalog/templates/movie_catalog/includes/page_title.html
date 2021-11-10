@@ -14,6 +14,8 @@
 			    {% if title != 5 %}Фильмы с рейтингом от {{title}} до {{title|add:1}}
 			    {% else %}Фильмы с рейтингом {{title}}
 			    {% endif %}
+              {% elif search %}
+			    Результаты поиска "{{title|truncatechars:30}}"
 		      {% else %}
 			    {{title}}
 		      {% endif %}
@@ -35,6 +37,8 @@
                   {% if title != 5 %}рейтинг {{title}} - {{title|add:1}}
                   {% else %}рейтинг {{title}}
                   {% endif %}
+                {% elif search %}
+			      поиск "{{title|truncatechars:30}}"
                 {% else %}
                   {{title}}
                 {% endif %}
