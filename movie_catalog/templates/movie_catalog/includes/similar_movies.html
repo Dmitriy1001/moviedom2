@@ -1,0 +1,49 @@
+{% load movie_tags movie_filters %}
+
+<div class="col-12 col-lg-4 col-xl-4">
+    <div class="row">
+        <!-- section title -->
+        <div class="col-12">
+            <h2 class="section__title section__title--sidebar">Вам также может понравиться...</h2>
+        </div>
+        <!-- end section title -->
+
+        {% get_similar_movies movie as similar_movies %}
+        {% for similar_movie in similar_movies %}
+            <!-- card -->
+            <div class="col-6 col-sm-4 col-lg-6">
+                <div class="card">
+                    <a href="{% url 'movie_detail' category=similar_movie.category.slug movie_slug=similar_movie.slug %}">
+                        <div class="card__cover" style="cursor: pointer;">
+                            <img src="{{similar_movie.poster.url}}" alt="">
+                            <i class="icon"></i>
+                        </div>
+                    </a>
+                    <div class="card__content">
+                        <h3 class="card__title">
+                            <a href="{% url 'movie_detail' category=similar_movie.category.slug movie_slug=similar_movie.slug %}">
+                                {{similar_movie}}
+                            </a>
+                        </h3>
+                        <span class="card__category">
+                            {% for genre in similar_movie.genre.all %}
+                                <a href="{% url 'filter' model='genre' instance=genre.slug %}">
+                                    {{genre}}
+                                </a>
+                            {% endfor %}
+                        </span>
+                        {% if similar_movie.avg_rating %}
+                            <a href="{% url 'filter' model='rating' instance=similar_movie.avg_rating|round_number:1 %}">
+                                <span class="card__rate">
+                                    <i class="icon ion-ios-star"></i>
+                                    {{similar_movie.avg_rating|round_number:1}}
+                                </span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- end card -->
+        {% endfor %}
+    </div>
+</div>

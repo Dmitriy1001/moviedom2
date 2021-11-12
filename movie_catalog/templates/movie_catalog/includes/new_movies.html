@@ -129,7 +129,7 @@
                                             {% endfor %}
                                         </span>
                                         {% if movie.avg_rating %}
-                                            <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}
+                                            <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}">
                                                 <span class="card__rate">
                                                     <i class="icon ion-ios-star"></i>
                                                     {{movie.avg_rating|round_number:1}}
@@ -179,7 +179,7 @@
                                             {% endfor %}
                                         </span>
                                         {% if movie.avg_rating %}
-                                            <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}
+                                            <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}">
                                                 <span class="card__rate">
                                                     <i class="icon ion-ios-star"></i>
                                                     {{movie.avg_rating|round_number:1}}
@@ -229,7 +229,7 @@
                                             {% endfor %}
                                         </span>
                                         {% if movie.avg_rating %}
-                                            <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}
+                                            <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}">
                                                 <span class="card__rate">
                                                     <i class="icon ion-ios-star"></i>
                                                     {{movie.avg_rating|round_number:1}}
