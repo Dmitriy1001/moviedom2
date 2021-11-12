@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'embed_video',
     'movie_catalog.apps.MovieCatalogConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
