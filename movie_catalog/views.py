@@ -83,24 +83,39 @@ class Filter(MovieList):
     extra_context = {'page': 'movie_grid'}
 
     def get_queryset(self):
-        print(type(self.kwargs['instance']), '!!!')
-        if self.kwargs['model'] != 'rating':
+        flags = {'by_rating': False, 'by_year': False}
+        # by rating
+        if self.kwargs['model'] == 'rating':
+            star = int(float(self.kwargs['instance']))
+            movies = (
+                Movie.objects.annotate(avg_rating=Avg('ratings__star__number'))
+                .filter(avg_rating__range=(star, star + 0.9))
+            )
+            self.kwargs['title'] = star
+            flags['by_rating'] = True
+        # by year
+        elif self.kwargs['model'] == 'year':
+            print(type(self.kwargs['instance']), '!!!')
+            movies = (
+                Movie.objects.annotate(avg_rating=Avg('ratings__star__number'))
+                .filter(year=self.kwargs['instance'])
+            )
+            self.kwargs['title'] = self.kwargs['instance']
+            flags['by_year'] = True
+        # by related model(Genre, Country, Director, Actor)
+        else:
             model = self.models[self.kwargs['model']]
             model_instance = model.objects.get(slug=self.kwargs['instance'])
             movies = model_instance.movies.annotate(avg_rating=Avg('ratings__star__number'))
             self.kwargs['title'] = model_instance.name
-        else:
-            star = int(float(self.kwargs['instance']))
-            movies = (
-                Movie.objects.annotate(avg_rating=Avg('ratings__star__number'))
-                .filter(avg_rating__range=(star, star+0.9))
-            )
-            self.kwargs['title'] = star
+
+        self.kwargs['flags'] = flags
         return movies.filter(available=True, moderation=True)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.kwargs['title']
+        context.update(self.kwargs['flags'])
         return context
 
 
@@ -126,6 +141,8 @@ class Search(MovieList):
 
 
 class MovieDetail(DetailView):
+    extra_context = {'page': 'movie_detail'}
+
     def get_queryset(self):
         return (
             Movie.objects.filter(
@@ -137,8 +154,14 @@ class MovieDetail(DetailView):
         )
 
     def get_object(self):
-        return self.get_queryset().get(slug=self.kwargs['movie_slug'])
+        movie = self.get_queryset().get(slug=self.kwargs['movie_slug'])
+        self.kwargs['title'] = movie.category.name
+        return movie
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.kwargs['title']
+        return context
 
 class About(TemplateView):
     template_name = 'movie_catalog/about.html'

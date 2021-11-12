@@ -23,7 +23,9 @@
                             <h3 class="card__title">{{movie.title}}</h3>
                             <span class="card__category">
                                 {% for genre in movie.genre.all %}
-                                    <a href="#">{{genre}}</a>
+                                    <a href="{% url 'filter' model='genre' instance=genre.slug %}">
+                                        {{genre}}
+                                    </a>
                                 {% endfor %}
                             </span>
                         </div>

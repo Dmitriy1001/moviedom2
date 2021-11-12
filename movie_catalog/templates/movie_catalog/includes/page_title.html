@@ -10,12 +10,14 @@
             {% if not title and page == 'movie_list' %} Все категории
             {% elif not title and page == 'about' %} Про нас
             {% elif page == 'movie_grid' %}
-              {% if title|isnumber %}
+              {% if search %}
+			    Результаты поиска "{{title|truncatechars:30}}"
+              {% elif by_rating %}
 			    {% if title != 5 %}Фильмы с рейтингом от {{title}} до {{title|add:1}}
 			    {% else %}Фильмы с рейтингом {{title}}
 			    {% endif %}
-              {% elif search %}
-			    Результаты поиска "{{title|truncatechars:30}}"
+              {% elif by_year %}
+                Фильмы за {{title}} год
 		      {% else %}
 			    {{title}}
 		      {% endif %}
@@ -33,12 +35,14 @@
               {% if not title and page == 'movie_list' %} Все категории
               {% elif not title and page == 'about' %} Про нас
               {% elif page == 'movie_grid' %}
-                {% if title|isnumber %}
+                {% if search %}
+			      поиск "{{title|truncatechars:30}}"
+                {% elif by_rating %}
                   {% if title != 5 %}рейтинг {{title}} - {{title|add:1}}
                   {% else %}рейтинг {{title}}
                   {% endif %}
-                {% elif search %}
-			      поиск "{{title|truncatechars:30}}"
+                {% elif by_year %}
+                  Фильмы {{title}}
                 {% else %}
                   {{title}}
                 {% endif %}

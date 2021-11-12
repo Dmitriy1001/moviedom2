@@ -5,12 +5,14 @@
 	{% if page == 'movie_list' %}
 		{% if title %}{{title}}{% else %}Все категории{% endif %} | {{block.super}}
 	{% elif page == 'movie_grid' %}
-		{% if title|isnumber and not search %}
+		{% if search %}
+			Результаты поиска "{{title|truncatechars:30}}" | {{block.super}}
+		{% elif by_rating %}
 			{% if title != 5 %}Фильмы с рейтингом от {{title}} до {{title|add:1}} | {{block.super}}
 			{% else %}Фильмы с рейтингом {{title}} | {{block.super}}
 			{% endif %}
-		{% elif search %}
-			Результаты поиска "{{title|truncatechars:30}}" | {{block.super}}
+		{% elif by_year %}
+			 Фильмы за {{title}} год | {{block.super}}
 		{% else %}
 			{{title}} | {{block.super}}
 		{% endif %}

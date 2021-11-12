@@ -11,12 +11,12 @@
                         <div class="card card--list">
                             <div class="row">
                                 <div class="col-12 col-sm-4">
-                                    <div class="card__cover" style="cursor:pointer;">
-                                        <img src="{{movie.poster.url}}" alt="">
-                                        <a href="#" class="">
+                                    <a href="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}">
+                                        <div class="card__cover" style="cursor:pointer;">
+                                            <img src="{{movie.poster.url}}" alt="">
                                             <i class="icon"></i>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </div>
 
                                 <div class="col-12 col-sm-8">
@@ -36,7 +36,7 @@
 
                                         <div class="card__wrap">
                                             {% if movie.avg_rating %}
-                                                <a href="{% url 'filter' model='rating' instance=movie.avg_rating %}">
+                                                <a href="{% url 'filter' model='rating' instance=movie.avg_rating|round_number:1 %}">
                                                     <span class="card__rate">
                                                         <i class="icon ion-ios-star"></i>{{movie.avg_rating|round_number:1}}
                                                     </span>

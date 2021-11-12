@@ -35,16 +35,21 @@
 							<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-7">
 								<div class="card__content">
 									<div class="card__wrap">
-										<span class="card__rate">
-											<i class="icon ion-ios-star"></i>
-											{{movie.avg_rating|round_number}}
-										</span>
-
+										{% if movie.avg_rating %}
+											<a href="{% url 'filter' model='rating' instance=movie.avg_rating %}">
+												<span class="card__rate">
+													<i class="icon ion-ios-star"></i>
+													{{movie.avg_rating|round_number:1}}
+												</span>
+											</a>
+										{% endif %}
 										<ul class="card__list">
 											{% if movie.age_limit != '0' %}
 												<li>{{movie.age_limit}}+</li>
 											{% endif %}
+											<a href="{% url 'filter' model='year' instance=movie.year %}">
 												<li>{{movie.year}}</li>
+											</a>
 										</ul>
 									</div>
 
@@ -52,26 +57,34 @@
 										<li>
 											<span>Жанр:</span>
 											{% for genre in movie.genre.all %}
-												<a href="#">{{genre}}</a>
+												<a href="{% url 'filter' model='genre' instance=genre.slug %}">
+													{{genre}}
+												</a>
 											{% endfor %}
 										</li>
 										<li><span>Премьера в мире:</span> {{movie.world_premiere}}</li>
 										<li>
 											<span>Страна:</span>
 											{% for country in movie.country.all %}
-												<a href="#">{{country}}</a>
+												<a href="{% url 'filter' model='country' instance=country.slug %}">
+													{{country}}
+												</a>
 											{% endfor %}
 										</li>
 										<li>
 											<span>Режиссер:</span>
 											{% for director in movie.director.all %}
-												<a href="#">{{director}}</a>
+												<a href="{% url 'filter' model='director' instance=director.slug %}">
+													{{director}}
+												</a>
 											{% endfor %}
 										</li>
 										<li>
 											<span>Актеры:</span>
 											{% for actor in movie.actors.all %}
-												<a href="#">{{actor}}</a>
+												<a href="{% url 'filter' model='actor' instance=actor.slug %}">
+													{{actor}}
+												</a>
 											{% endfor %}
 										</li>
 										{% if movie.budget %}
@@ -104,11 +117,6 @@
 							<iframe width="560" height="315" src="{{movie.youtube_url|format_youtube_url}}" allowfullscreen></iframe>
 						</div>
 					</div>
-<!--					{% video movie.video as trailer %}-->
-<!--							{% video trailer %}-->
-<!--						{% endvideo %}-->
-<!--					<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Q6nepw3fskg" allowfullscreen>-->
-<!--					</iframe>-->
 				</div>
 
 				<!-- end player -->

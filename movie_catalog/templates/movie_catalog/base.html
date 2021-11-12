@@ -62,7 +62,7 @@
 
 								<!-- dropdown -->
 								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link {% if page == 'movie_list' %}header__nav-link--active{% endif %}" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категории</a>
+									<a class="dropdown-toggle header__nav-link {% if page == 'movie_list' or page == 'movie_detail' %}header__nav-link--active{% endif %}" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Категории</a>
 									{% get_categories as category_list %}
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
 										{% for category in category_list %}
