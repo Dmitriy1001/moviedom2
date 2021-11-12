@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 
 from django.db import models
 
+from embed_video.fields import EmbedVideoField
+
 
 class Movie(models.Model):
     category = models.ForeignKey(
@@ -38,6 +40,7 @@ class Movie(models.Model):
     )
     available = models.BooleanField(default=True, verbose_name='Доступен')
     moderation = models.BooleanField(default=False, verbose_name='Модерация')
+    youtube_url = models.URLField(default='', verbose_name='Ссылка на трейлер в ютубе')
 
     class Meta:
         verbose_name = 'Фильм'

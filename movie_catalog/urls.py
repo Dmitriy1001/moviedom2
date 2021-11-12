@@ -9,4 +9,5 @@ urlpatterns = [
     path('filter/<str:model>/<str:instance>/', views.Filter.as_view(), name='filter'),
     path('search/', views.Search.as_view(), name='search'),
     path('<slug:category>/', views.MovieList.as_view(), name='movie_list'),
+    path('<slug:category>/<slug:movie_slug>/', views.MovieDetail.as_view(), name='movie_detail'),
 ]

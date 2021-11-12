@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from django.db.models import Avg, Min, Max, Q
+from django.db.models import Avg, Q
 from django.http import Http404
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre
 
@@ -122,8 +122,22 @@ class Search(MovieList):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.request.GET.get('search')
-        #context['search_query'] = self.request.GET.get('search')
         return context
+
+
+class MovieDetail(DetailView):
+    def get_queryset(self):
+        return (
+            Movie.objects.filter(
+                category__slug=self.kwargs['category'],
+                available=True,
+                moderation=True,
+            )
+            .annotate(avg_rating=Avg('ratings__star__number'))
+        )
+
+    def get_object(self):
+        return self.get_queryset().get(slug=self.kwargs['movie_slug'])
 
 
 class About(TemplateView):

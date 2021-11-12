@@ -17,7 +17,11 @@
                             </div>
 
                             <div class="card__content">
-                                <h3 class="card__title"><a href="#">{{movie}}</a></h3>
+                                <h3 class="card__title">
+                                    <a href="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}">
+                                        {{movie}}
+                                    </a>
+                                </h3>
                                 <span class="card__category">
                                     {% for genre in movie.genre.all %}
                                         <a href="{% url 'filter' model='genre' instance=genre.slug %}">

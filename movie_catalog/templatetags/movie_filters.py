@@ -25,3 +25,9 @@ def first_words(text, words_number:int):
 @register.filter
 def isnumber(value):
     return type(value) in (int, float)
+
+
+@register.filter
+def format_youtube_url(url:str):
+    '''formats youtube link for iframe tag'''
+    return url.replace('watch?v=', 'embed/')
