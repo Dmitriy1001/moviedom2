@@ -37,21 +37,9 @@
 </head>
 <body class="body">
 
-	<!-- handler -->
-	<div class="page-404 section--bg" data-bg="{% static 'img/section/section.jpg' %}">
-		<div class="container">
-			<div class="row">
-				<div class="col-12">
-					<div class="page-404__wrap">
-						<div class="page-404__content">
-							{% block handler %}{% endblock %}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- end handler -->
+	<!-- content -->
+	{% block content %}{% endblock %}
+	<!-- end content -->
 
 	<!-- JS -->
 	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>

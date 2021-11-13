@@ -1,3 +1,5 @@
+{% load static %}
+
 <section class="content">
     <div class="content__head">
         <div class="container">
@@ -54,7 +56,7 @@
                                     <ul class="comments__list">
                                         <li class="comments__item">
                                             <div class="comments__autor">
-                                                <img class="comments__avatar" src="img/user.png" alt="">
+                                                <img class="comments__avatar" src="{% static 'img/user.png' %}" alt="">
                                                 <span class="comments__name">John Doe</span>
                                                 <span class="comments__time">30.08.2018, 17:53</span>
                                             </div>
@@ -73,7 +75,7 @@
 
                                         <li class="comments__item comments__item--answer">
                                             <div class="comments__autor">
-                                                <img class="comments__avatar" src="img/user.png" alt="">
+                                                <img class="comments__avatar" src="{% static 'img/user.png' %}" alt="">
                                                 <span class="comments__name">John Doe</span>
                                                 <span class="comments__time">24.08.2018, 16:41</span>
                                             </div>

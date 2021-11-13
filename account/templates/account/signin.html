@@ -1,0 +1,52 @@
+{% extends 'additional_page_base.html' %}
+{% load static %}
+
+{% block content %}
+	<div class="sign section--bg" data-bg="{% static 'img/section/section.jpg' %}">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="sign__content">
+
+						<!-- authorization form -->
+						<form action="" method="post" class="sign__form" enctype="multipart/form-data">
+							{% csrf_token %}
+							<h2 class="section__title section__title--no-margin">Вход</h2>
+
+							{% if form.non_field_errors %}
+								<div class="sign__group" style="word-wrap: break-word; max-width: 275px;">
+									<span class="sign__text" style="color:#ff55a5;">
+										<b>{{form.non_field_errors}}</b>
+									</span>
+								</div>
+							{% endif %}
+<!--							<span class="sign__text" style="word-wrap: break-word; width: 300px;">-->
+<!--								Пожалуйста, введите правильные имя пользователя и пароль.Пожалуйста, введите правильные имя пользователя и пароль.-->
+<!--							</span>-->
+
+							<div class="sign__group">
+								<input name="username" type="text" class="sign__input" placeholder="Логин">
+							</div>
+
+							<div class="sign__group">
+								<input name="password" type="password" class="sign__input" placeholder="Пароль">
+							</div>
+
+                            <button class="sign__btn" type="submit">Войти</button>
+
+							<span class="sign__text">Еще нет аккаунта?
+                                <a href="{% url 'signup' %}">Зарегистрируйся!</a>
+                            </span>
+                            <hr>
+                            <a href="{% url 'index' %}" style="color:gray; text-decoration: underline; font-size:11pt;">
+                                На главную
+                            </a>
+						</form>
+						<!-- end authorization form -->
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

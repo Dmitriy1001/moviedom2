@@ -672,6 +672,14 @@ ul {
     margin-top: 0;
   }
 }
+.main_page__avatar {
+  /*position: absolute;*/
+  top: 0;
+  left: 0;
+  width: 50px;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
 /*==============================
 	Home
 ==============================*/

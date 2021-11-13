@@ -107,10 +107,28 @@
 									<i class="icon ion-ios-search"></i>
 								</button>
 
-								<a href="" class="header__sign-in">
+								{% if user.is_authenticated %}
 									<i class="icon ion-ios-log-in"></i>
-									<span>Войти</span>
-								</a>
+									<i class="icon ion-ios-log-in"></i>
+									<li class="dropdown header__nav-item">
+										<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											{% if user.profile.avatar %}
+												<img src="{{user.profile.avatar.url}}" class="main_page__avatar">
+											{% else %}
+												<img src="{% static 'img/none_avatar.jpg' %}" class="main_page__avatar">
+											{% endif %}
+										</a>
+										<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
+											<li><a href="">Профиль</a></li>
+											<li><a href="{% url 'logout' %}">Выйти</a></li>
+										</ul>
+									</li>
+								{% else %}
+									<a href="{% url 'signin' %}" class="header__sign-in">
+										<i class="icon ion-ios-log-in"></i>
+										<span>Войти</span>
+									</a>
+								{% endif %}
 							</div>
 							<!-- end header auth -->
 
