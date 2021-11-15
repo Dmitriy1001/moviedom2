@@ -14,6 +14,11 @@ class Profile(models.Model):
         verbose_name = 'Профиль'
         verbose_name_plural = 'Профиль'
 
+    def save(self, *args, **kwargs):
+        if not self.avatar:
+            self.avatar = 'moviegoer.jpg'
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.user.username
 

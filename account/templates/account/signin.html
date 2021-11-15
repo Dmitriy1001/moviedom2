@@ -20,9 +20,6 @@
 									</span>
 								</div>
 							{% endif %}
-<!--							<span class="sign__text" style="word-wrap: break-word; width: 300px;">-->
-<!--								Пожалуйста, введите правильные имя пользователя и пароль.Пожалуйста, введите правильные имя пользователя и пароль.-->
-<!--							</span>-->
 
 							<div class="sign__group">
 								<input name="username" type="text" class="sign__input" placeholder="Логин">
@@ -37,8 +34,8 @@
 							<span class="sign__text">Еще нет аккаунта?
                                 <a href="{% url 'signup' %}">Зарегистрируйся!</a>
                             </span>
-                            <hr>
-                            <a href="{% url 'index' %}" style="color:gray; text-decoration: underline; font-size:11pt;">
+							<p></p>
+							<a href="{% url 'index' %}" style="color:gray; text-decoration: underline; font-size:11pt;">
                                 На главную
                             </a>
 						</form>

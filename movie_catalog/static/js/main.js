@@ -459,12 +459,12 @@ $(document).ready(function () {
 			var thirdSlider = document.getElementById('slider__rating');
 			noUiSlider.create(thirdSlider, {
 				range: {
-					'min': 0,
-					'max': 10
+					'min': 1,
+					'max': 5
 				},
 				connect: [true, false],
 				step: 0.1,
-				start: 8.6,
+				start: 1,
 				format: wNumb({
 					decimals: 1,
 				})

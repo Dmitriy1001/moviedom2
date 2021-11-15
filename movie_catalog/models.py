@@ -130,7 +130,8 @@ class Comment(models.Model):
     text = models.TextField(max_length=5000, verbose_name='Текст')
     parent = models.ForeignKey(
         'self',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
+        related_name='replies',
         blank=True,
         null=True,
         verbose_name='Родитель',

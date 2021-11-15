@@ -1,10 +1,14 @@
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import Http404
+from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, DetailView
 
-from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre
+from movie_catalog.forms import CommentForm
+from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre, Comment
 
 
 class Index(TemplateView):
@@ -142,6 +146,7 @@ class Search(MovieList):
 
 class MovieDetail(DetailView):
     extra_context = {'page': 'movie_detail'}
+    form_class = CommentForm
 
     def get_queryset(self):
         return (
@@ -154,13 +159,28 @@ class MovieDetail(DetailView):
         )
 
     def get_object(self):
-        movie = self.get_queryset().get(slug=self.kwargs['movie_slug'])
-        self.kwargs['title'] = movie.category.name
-        return movie
+        return self.get_queryset().get(slug=self.kwargs['movie_slug'])
+
+    @method_decorator(login_required)
+    def post(self, request, **kwargs):
+        movie = self.get_object()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            if request.POST.get('parent', None):
+                parent = Comment.objects.get(id=int(request.POST.get('parent')))
+                new_comment.parent = parent if not parent.parent else parent.parent
+            new_comment.movie = movie
+            new_comment.user = request.user
+            new_comment.save()
+            return redirect('movie_detail', movie.category.slug, movie.slug)
+        return render(request, self.template_name, {'movie': movie, 'form': form})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = self.kwargs['title']
+        movie = self.get_object()
+        context['title'] = movie.category.name
+        context['none_parent_comments'] = movie.comments.filter(parent=None)
         return context
 
 class About(TemplateView):
