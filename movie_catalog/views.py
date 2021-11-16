@@ -16,6 +16,8 @@ class Index(TemplateView):
     extra_context = {'page': 'index'}
 
     def get_context_data(self, **kwargs):
+        print(dir(self.request.user))
+        print(self.request.user.is_anonymous)
         context = super().get_context_data(**kwargs)
         # top movies
         current_date = datetime.today()
@@ -161,7 +163,6 @@ class MovieDetail(DetailView):
     def get_object(self):
         return self.get_queryset().get(slug=self.kwargs['movie_slug'])
 
-    @method_decorator(login_required)
     def post(self, request, **kwargs):
         movie = self.get_object()
         form = self.form_class(request.POST)
@@ -171,7 +172,8 @@ class MovieDetail(DetailView):
                 parent = Comment.objects.get(id=int(request.POST.get('parent')))
                 new_comment.parent = parent if not parent.parent else parent.parent
             new_comment.movie = movie
-            new_comment.user = request.user
+            if not request.user.is_anonymous:
+                new_comment.user = request.user
             new_comment.save()
             return redirect('movie_detail', movie.category.slug, movie.slug)
         return render(request, self.template_name, {'movie': movie, 'form': form})

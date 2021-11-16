@@ -124,6 +124,7 @@ class Comment(models.Model):
         User,
         related_name='comments',
         on_delete=models.CASCADE,
+        null=True,
         verbose_name='Пользователь',
     )
     posted_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')

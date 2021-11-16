@@ -65,7 +65,8 @@
                                                         <img class="comments__avatar" src="{{comment.user.profile.avatar.url}}" alt="">
                                                     {% endif %}
                                                     <span class="comments__name">
-                                                        {% if comment.user.username == 'admin' %}<b><i>{{comment.user}}</i></b>
+                                                        {% if not comment.user %}Гость
+                                                        {% elif comment.user.is_staff %}<b><i>{{comment.user}}</i></b>
                                                         {% else %}{{comment.user}}
                                                         {% endif %}
                                                     </span>
@@ -77,7 +78,7 @@
 <!--                                                        <button type="button"><i class="icon ion-md-thumbs-up"></i>12</button>-->
 <!--                                                        <button type="button">7<i class="icon ion-md-thumbs-down"></i></button>-->
 <!--                                                    </div>-->
-                                                    <a href="#formComment" onclick="addComment('{{comment.user.username}}', '{{comment.id}}')">
+                                                    <a href="#formComment" onclick="addComment('{% if comment.user %}{{comment.user.username}}{% else %}Гость{% endif %}', '{{comment.id}}')">
                                                         <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>
                                                     </a>
                                                 </div>
@@ -93,7 +94,8 @@
                                                                 <img class="comments__avatar" src="{{reply.user.profile.avatar.url}}" alt="">
                                                             {% endif %}
                                                             <span class="comments__name">
-                                                                {% if reply.user.username == 'admin' %}<b><i>{{reply.user}}</i></b>
+                                                                {% if not reply.user %}Гость
+                                                                {% elif reply.user.username == 'admin' %}<b><i>{{reply.user}}</i></b>
                                                                 {% else %}{{reply.user}}
                                                                 {% endif %}
                                                             </span>
@@ -116,23 +118,12 @@
                                         {% endfor %}
                                     </ul>
 
-                                    {% if user.is_authenticated %}
-                                        <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formComment">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="parent" id="parent">
-                                            <textarea id="text" name="text" class="form__textarea" placeholder="Ваш комментарий"></textarea>
-                                            <button type="submit" class="form__btn">Добавить</button>
-                                        </form>
-                                    {% else %}
-                                        <div>
-                                            <h4 style="color:white;">
-                                                <a href="{% url 'signin' %}" style="color: #ff55a5;" target="_blank">
-                                                    Авторизируйтесь
-                                                </a>
-                                                , чтобы оставлять комментарии
-                                            </h4>
-                                        </div>
-                                    {% endif %}
+                                    <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formComment">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="parent" id="parent">
+                                        <textarea id="text" name="text" class="form__textarea" placeholder="Ваш комментарий"></textarea>
+                                        <button type="submit" class="form__btn">Добавить</button>
+                                    </form>
                                 </div>
                             </div>
                             <!-- end comments -->
@@ -182,12 +173,10 @@
                                     </ul>
 
                                     <form action="#" class="form">
-                                        <input type="text" class="form__input" placeholder="Title">
-                                        <textarea class="form__textarea" placeholder="Review"></textarea>
-                                        <div class="form__slider">
-                                            <div class="form__slider-rating" id="slider__rating"></div>
-                                            <div class="form__slider-value" id="form__slider-value"></div>
-                                        </div>
+                                        <input type="text" class="form__input" placeholder="Заголовок">
+                                        <textarea class="form__textarea" placeholder="Текст"></textarea>
+
+
                                         <button type="button" class="form__btn">Send</button>
                                     </form>
                                 </div>
