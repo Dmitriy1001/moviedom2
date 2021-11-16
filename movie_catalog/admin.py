@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Movie, Category, Genre, Country, Director, Actor, Comment, Review, RatingStar, Rating, MovieShot
+from .models import Movie, Category, Genre, Country, Director, Actor, Comment, RatingStar, Review, MovieShot
 
 
 @admin.register(Movie)
@@ -38,18 +38,13 @@ class CommentAdmin(admin.ModelAdmin):
     ...
 
 
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    ...
-
-
 @admin.register(RatingStar)
 class RatingStarAdmin(admin.ModelAdmin):
     ...
 
 
-@admin.register(Rating)
-class RatingAdmin(admin.ModelAdmin):
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
     list_display = ('movie', 'star', 'user')
 
 

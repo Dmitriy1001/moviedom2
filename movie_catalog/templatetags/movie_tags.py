@@ -23,7 +23,7 @@ def get_similar_movies(current_movie:Movie):
         )
         .exclude(slug=current_movie.slug)
         .distinct()
-        .annotate(avg_rating=Avg('ratings__star__number'))
+        .annotate(avg_rating=Avg('reviews__star__number'))
     )
     for movie in similar_movies:
         similar_genres = filter(lambda genre: genre in current_movie_genres, movie.genre.all())

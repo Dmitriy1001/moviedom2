@@ -1,10 +1,8 @@
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import Http404
 from django.shortcuts import redirect, render
-from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, DetailView
 
 from movie_catalog.forms import CommentForm
@@ -16,8 +14,6 @@ class Index(TemplateView):
     extra_context = {'page': 'index'}
 
     def get_context_data(self, **kwargs):
-        print(dir(self.request.user))
-        print(self.request.user.is_anonymous)
         context = super().get_context_data(**kwargs)
         # top movies
         current_date = datetime.today()
@@ -32,25 +28,25 @@ class Index(TemplateView):
                 available=True,
                 moderation=True,
             )
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
             .order_by('-avg_rating')
         )[:10]
         # new movies
         context['new_all'] = (
             Movie.objects.filter(available=True, moderation=True)
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )[:6]
         context['new_films'] = (
             Movie.objects.filter(available=True, moderation=True, category__slug='films')
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )[:6]
         context['new_cartoons'] = (
             Movie.objects.filter(available=True, moderation=True, category__slug='cartoons')
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )[:6]
         context['new_series'] = (
             Movie.objects.filter(available=True, moderation=True, category__slug='series')
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )[:6]
         # expected movies
         context['expected_movies'] = Movie.objects.filter(available=False, moderation=True)
@@ -65,7 +61,7 @@ class MovieList(ListView):
     def get_queryset(self):
         movies = (
             Movie.objects.filter(available=True, moderation=True)
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )
         if self.kwargs['category'] == 'all':
             self.kwargs['title'] = None
@@ -94,16 +90,15 @@ class Filter(MovieList):
         if self.kwargs['model'] == 'rating':
             star = int(float(self.kwargs['instance']))
             movies = (
-                Movie.objects.annotate(avg_rating=Avg('ratings__star__number'))
+                Movie.objects.annotate(avg_rating=Avg('reviews__star__number'))
                 .filter(avg_rating__range=(star, star + 0.9))
             )
             self.kwargs['title'] = star
             flags['by_rating'] = True
         # by year
         elif self.kwargs['model'] == 'year':
-            print(type(self.kwargs['instance']), '!!!')
             movies = (
-                Movie.objects.annotate(avg_rating=Avg('ratings__star__number'))
+                Movie.objects.annotate(avg_rating=Avg('reviews__star__number'))
                 .filter(year=self.kwargs['instance'])
             )
             self.kwargs['title'] = self.kwargs['instance']
@@ -112,7 +107,7 @@ class Filter(MovieList):
         else:
             model = self.models[self.kwargs['model']]
             model_instance = model.objects.get(slug=self.kwargs['instance'])
-            movies = model_instance.movies.annotate(avg_rating=Avg('ratings__star__number'))
+            movies = model_instance.movies.annotate(avg_rating=Avg('reviews__star__number'))
             self.kwargs['title'] = model_instance.name
 
         self.kwargs['flags'] = flags
@@ -137,7 +132,7 @@ class Search(MovieList):
         return (
             Movie.objects.filter(available=True, moderation=True)
             .filter(Q(title__icontains=query) | Q(description__icontains=query))
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -157,7 +152,7 @@ class MovieDetail(DetailView):
                 available=True,
                 moderation=True,
             )
-            .annotate(avg_rating=Avg('ratings__star__number'))
+            .annotate(avg_rating=Avg('reviews__star__number'))
         )
 
     def get_object(self):
@@ -183,6 +178,7 @@ class MovieDetail(DetailView):
         movie = self.get_object()
         context['title'] = movie.category.name
         context['none_parent_comments'] = movie.comments.filter(parent=None)
+        context['reviews'] = movie.reviews.exclude(text='')
         return context
 
 class About(TemplateView):
