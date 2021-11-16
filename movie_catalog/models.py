@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from embed_video.fields import EmbedVideoField
@@ -146,55 +146,34 @@ class Comment(models.Model):
         return f'{self.movie.title} - {self.text[:30]}'
 
 
-class Review(models.Model):
-    movie = models.ForeignKey(
-        Movie,
-        related_name='reviews',
-        on_delete=models.CASCADE,
-        verbose_name='Фильм',
-    )
-    user = models.ForeignKey(
-        User,
-        related_name='reviews',
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь',
-    )
-    posted_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
-    text = models.TextField(verbose_name='Текст')
-
-    class Meta:
-        verbose_name = 'Отзыв'
-        verbose_name_plural = 'Отзывы'
-
-    def __str__(self):
-        return f'{self.movie.title} - {self.text[:30]}'
-
-
 class RatingStar(models.Model):
-    number = models.PositiveSmallIntegerField(default=0, verbose_name='Число')
+    number = models.FloatField(
+        default=0,
+        unique=True,
+        validators=[MinValueValidator(1)],
+        verbose_name='Число',
+    )
     slug = models.SlugField(blank=True)
 
     class Meta:
         verbose_name = 'Звезду рейтинга'
         verbose_name_plural = 'Звезды рейтинга'
-
-    def get_movies(self, number):
-        return Movie.objects.filter(ratings__star__number=int(number))
+        ordering = ('-number',)
 
     def __str__(self):
         return str(self.number)
 
 
-class Rating(models.Model):
+class Review(models.Model):
     user = models.ForeignKey(
         User,
-        related_name='ratings',
+        related_name='reviews',
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
     )
     movie = models.ForeignKey(
         Movie,
-        related_name='ratings',
+        related_name='reviews',
         on_delete=models.CASCADE,
         verbose_name='Фильм'
     )
@@ -203,13 +182,17 @@ class Rating(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Звезда'
     )
+    posted_at = models.DateTimeField(auto_now=True, verbose_name='Опубликовано')
+    title = models.CharField(max_length=255, blank=True, verbose_name='Заголовок')
+    text = models.TextField(blank=True, verbose_name='Текст')
 
     class Meta:
-        verbose_name = 'Рейтинг'
-        verbose_name_plural = 'Рейтинги'
+        verbose_name = 'Рецензию'
+        verbose_name_plural = 'Рецензии'
+        ordering = ('-posted_at',)
 
     def clean(self):
-        if Rating.objects.filter(user=self.user, movie=self.movie):
+        if Review.objects.filter(user=self.user, movie=self.movie):
             raise ValidationError('Пользователь уже поставил оценку этому фильму')
 
     def __str__(self):
