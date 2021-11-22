@@ -163,6 +163,16 @@ ul {
     transition: none;
   }
 }
+
+.more {display: none;}
+.myBtn{
+  cursor: pointer;
+  height: 24px;
+  width: 100%;
+  color: #ff55a5;
+}
+
+
 .b-description_readmore_button {
   cursor: pointer;
   display: block;
@@ -191,6 +201,13 @@ ul {
 .b-description_readmore_button.b-description_readmore_button_active:before {
   color: #ff55a5;
 }
+
+
+body {
+  margin-bottom: 50px;
+}
+
+
 .body:before {
   content: '';
   position: fixed;
@@ -2750,6 +2767,29 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   font-family: 'Open Sans', sans-serif;
   letter-spacing: 0.2px;
 }
+
+.preview {
+  display: block;
+  margin: 0;
+  color: rgba(255,255,255,0.7);
+  font-size: 15px;
+  line-height: 25px;
+  background-color: #28282d;
+  padding: 20px;
+  font-family: 'Open Sans', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.user__review {
+  background-image: -moz-linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  background-image: -webkit-linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  background-image: -ms-linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  background-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  -webkit-box-shadow: 0 0 20px 0 rgba(255,88,96,0.5);
+  box-shadow: 0 0 20px 0 rgba(255,88,96,0.5);
+  opacity: 1;
+}
+
 .reviews__item {
   margin-bottom: 30px;
   display: block;
@@ -2857,7 +2897,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   position: relative;
 }
 .form__slider:before {
-  content: 'Rate:';
+  content: 'Оценка:';
   position: absolute;
   bottom: 100%;
   left: 0;

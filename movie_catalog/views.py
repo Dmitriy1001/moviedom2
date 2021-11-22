@@ -1,12 +1,16 @@
 from datetime import datetime
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db.models import Avg, Q
 from django.http import Http404
 from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, DetailView
 
-from movie_catalog.forms import CommentForm
-from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre, Comment
+from movie_catalog.forms import CommentForm, ReviewForm
+from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre, Comment, Review, RatingStar
 
 
 class Index(TemplateView):
@@ -159,8 +163,13 @@ class MovieDetail(DetailView):
         return self.get_queryset().get(slug=self.kwargs['movie_slug'])
 
     def post(self, request, **kwargs):
+        if 'star' in request.POST:
+            return self.post_review(request)
+        return self.post_comment(request)
+
+    def post_comment(self, request, **kwargs):
         movie = self.get_object()
-        form = self.form_class(request.POST)
+        form = CommentForm(request.POST)
         if form.is_valid():
             new_comment = form.save(commit=False)
             if request.POST.get('parent', None):
@@ -170,16 +179,41 @@ class MovieDetail(DetailView):
             if not request.user.is_anonymous:
                 new_comment.user = request.user
             new_comment.save()
+        return redirect('movie_detail', movie.category.slug, movie.slug)
+
+    @method_decorator(login_required)
+    def post_review(self, request, **kwargs):
+        new_review_data = request.POST
+        star = RatingStar.objects.get(number=float(new_review_data['star']))
+        movie = self.get_object()
+        new_review = Review(
+            user=request.user,
+            movie=movie,
+            star=star,
+            title=new_review_data['title'],
+            text=new_review_data['text'],
+        )
+        try:
+            new_review.clean()
+        except ValidationError:
             return redirect('movie_detail', movie.category.slug, movie.slug)
-        return render(request, self.template_name, {'movie': movie, 'form': form})
+        new_review.save()
+        messages.success(request, f'Оценка добавлена')
+        return redirect('movie_detail', movie.category.slug, movie.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         movie = self.get_object()
+        reviews = movie.reviews.all()
         context['title'] = movie.category.name
         context['none_parent_comments'] = movie.comments.filter(parent=None)
-        context['reviews'] = movie.reviews.exclude(text='')
+        context['reviews'] = reviews
+        try:
+            context['user_reviewed'] = reviews.filter(user=self.request.user).exists()
+        except TypeError:
+            context['user_reviewed'] = None
         return context
+
 
 class About(TemplateView):
     template_name = 'movie_catalog/about.html'

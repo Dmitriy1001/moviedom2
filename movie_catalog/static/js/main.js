@@ -130,13 +130,13 @@ $(document).ready(function () {
 	$('.filter__item-menu li').each( function() {
 		$(this).attr('data-value', $(this).text().toLowerCase());
 	});
-//
-//	$('.filter__item-menu li').on('click', function() {
-//		var text = $(this).text();
-//		var item = $(this);
-//		var id = item.closest('.filter__item').attr('id');
-//		$('#'+id).find('.filter__item-btn input').val(text);
-//	});
+
+	$('.filter__item-menu li').on('click', function() {
+		var text = $(this).text();
+		var item = $(this);
+		var id = item.closest('.filter__item').attr('id');
+		$('#'+id).find('.filter__item-btn input').val(text);
+	});
 
 	/*==============================
 	Scroll bar
@@ -166,11 +166,13 @@ $(document).ready(function () {
 		animationspeed: 400
 	});
 
+
+
 	/*==============================
 	Gallery
 	==============================*/
 	var initPhotoSwipeFromDOM = function(gallerySelector) {
-		// parse slide data (url, title, size ...) from DOM elements 
+		// parse slide data (url, title, size ...) from DOM elements
 		// (children of gallerySelector)
 		var parseThumbnailElements = function(el) {
 			var thumbElements = el.childNodes,
@@ -185,7 +187,7 @@ $(document).ready(function () {
 
 				figureEl = thumbElements[i]; // <figure> element
 
-				// include only element nodes 
+				// include only element nodes
 				if(figureEl.nodeType !== 1) {
 					continue;
 				}
@@ -203,13 +205,13 @@ $(document).ready(function () {
 
 				if(figureEl.children.length > 1) {
 					// <figcaption> content
-					item.title = figureEl.children[1].innerHTML; 
+					item.title = figureEl.children[1].innerHTML;
 				}
 
 				if(linkEl.children.length > 0) {
 					// <img> thumbnail element, retrieving thumbnail url
 					item.msrc = linkEl.children[0].getAttribute('src');
-				} 
+				}
 
 				item.el = figureEl; // save link to element for getThumbBoundsFn
 				items.push(item);
@@ -248,8 +250,8 @@ $(document).ready(function () {
 				index;
 
 			for (var i = 0; i < numChildNodes; i++) {
-				if(childNodes[i].nodeType !== 1) { 
-					continue; 
+				if(childNodes[i].nodeType !== 1) {
+					continue;
 				}
 
 				if(childNodes[i] === clickedListItem) {
@@ -280,10 +282,10 @@ $(document).ready(function () {
 				if(!vars[i]) {
 					continue;
 				}
-				var pair = vars[i].split('=');  
+				var pair = vars[i].split('=');
 				if(pair.length < 2) {
 					continue;
-				}           
+				}
 				params[pair[0]] = pair[1];
 			}
 
@@ -312,7 +314,7 @@ $(document).ready(function () {
 					// See Options -> getThumbBoundsFn section of documentation for more info
 					var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
 						pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
-						rect = thumbnail.getBoundingClientRect(); 
+						rect = thumbnail.getBoundingClientRect();
 
 					return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
 				}
@@ -322,7 +324,7 @@ $(document).ready(function () {
 			// PhotoSwipe opened from URL
 			if(fromURL) {
 				if(options.galleryPIDs) {
-					// parse real index when custom PIDs are used 
+					// parse real index when custom PIDs are used
 					// http://photoswipe.com/documentation/faq.html#custom-pid-in-url
 					for(var j = 0; j < items.length; j++) {
 						if(items[j].pid == index) {
@@ -387,17 +389,16 @@ $(document).ready(function () {
 	==============================*/
 	/*1*/
 	function initializeFirstSlider() {
-	    var years_range = JSON.parse(document.getElementById('years_range').textContent);
-        if ($('#filter__years').length) {
+		if ($('#filter__years').length) {
 			var firstSlider = document.getElementById('filter__years');
 			noUiSlider.create(firstSlider, {
 				range: {
-					'min': years_range.start,
-					'max': years_range.end
+					'min': 2000,
+					'max': 2018
 				},
 				step: 1,
 				connect: true,
-				start: [years_range.start, years_range.end],
+				start: [2005, 2015],
 				format: wNumb({
 					decimals: 0,
 				})
@@ -422,12 +423,12 @@ $(document).ready(function () {
 			var secondSlider = document.getElementById('filter__imbd');
 			noUiSlider.create(secondSlider, {
 				range: {
-					'min': 1,
-					'max': 5
+					'min': 0,
+					'max': 10
 				},
 				step: 0.1,
 				connect: true,
-				start: [1, 5],
+				start: [2.5, 8.6],
 				format: wNumb({
 					decimals: 1,
 				})
@@ -463,22 +464,23 @@ $(document).ready(function () {
 					'max': 5
 				},
 				connect: [true, false],
-				step: 0.1,
+				step: 0.5,
 				start: 1,
 				format: wNumb({
 					decimals: 1,
 				})
 			});
-
 			var thirdValue = document.getElementById('form__slider-value');
-
-			thirdSlider.noUiSlider.on('update', function( values, handle ) {
+            thirdSlider.noUiSlider.on('update', function( values, handle ) {
 				thirdValue.innerHTML = values[handle];
+				$('#star').val(thirdValue.innerHTML);
 			});
+
 		} else {
 			return false;
 		}
 		return false;
 	}
 	$(window).on('load', initializeThirdSlider());
+
 });

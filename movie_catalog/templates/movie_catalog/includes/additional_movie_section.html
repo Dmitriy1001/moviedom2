@@ -23,17 +23,15 @@
                     <!-- content mobile tabs nav -->
                     <div class="content__mobile-tabs" id="content__mobile-tabs">
                         <div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <input type="button" value="Comments">
+                            <input type="button" value="Комментарии">
                             <span></span>
                         </div>
 
                         <div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
                             <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Comments</a></li>
-
-                                <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Reviews</a></li>
-
-                                <li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Photos</a></li>
+                                <li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Комментарии</a></li>
+                                <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Рецензии</a></li>
+                                <li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Кадры</a></li>
                             </ul>
                         </div>
                     </div>
@@ -72,7 +70,17 @@
                                                     </span>
                                                     <span class="comments__time">{{comment.posted_at}}</span>
                                                 </div>
-                                                <p class="comments__text">{{comment.text}}</p>
+                                                <p class="reviews__text">
+                                                    {% if comment.text|split_text|length <= 100 %}
+                                                        {{comment.text}}
+                                                    {% else %}
+                                                        {{comment.text|text_slice:'0,100'}}<span id="comment-dots{{comment.id}}"></span>
+                                                        <span id="comment-more{{comment.id}}" class="more">{{comment.text|text_slice:'100,full'}}</span>
+                                                        <span onclick="showMoreLess('comment', {{comment.id}})" class="myBtn" id="comment-myBtn{{comment.id}}">
+                                                            ...
+                                                        </span>
+                                                    {% endif %}
+                                                </p>
                                                 <div class="comments__actions">
 <!--                                                    <div class="comments__rate">-->
 <!--                                                        <button type="button"><i class="icon ion-md-thumbs-up"></i>12</button>-->
@@ -101,7 +109,17 @@
                                                             </span>
                                                             <span class="comments__time">{{reply.posted_at}}</span>
                                                         </div>
-                                                        <p class="comments__text">{{reply.text}}</p>
+                                                        <p class="reviews__text">
+                                                            {% if reply.text|split_text|length <= 100 %}
+                                                                {{reply.text}}
+                                                            {% else %}
+                                                                {{reply.text|text_slice:'0,100'}}<span id="reply-dots{{reply.id}}"></span>
+                                                                <span id="reply-more{{reply.id}}" class="more">{{reply.text|text_slice:'100,full'}}</span>
+                                                                <span onclick="showMoreLess('reply', {{reply.id}})" class="myBtn" id="reply-myBtn{{reply.id}}">
+                                                                ...
+                                                                </span>
+                                                            {% endif %}
+                                                        </p>
                                                         <div class="comments__actions">
 <!--                                                            <div class="comments__rate">-->
 <!--                                                                <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
@@ -139,7 +157,7 @@
                                 <div class="reviews">
                                     <ul class="reviews__list">
                                         {% for review in reviews %}
-                                            <li class="reviews__item">
+                                            <li class="reviews__item" id="{% if review.user == user %}userReview{% endif %}">
                                                 <div class="reviews__autor">
                                                     <img class="reviews__avatar" src="{{review.user.profile.avatar.url}}" alt="">
                                                     <span class="reviews__name">{{review.title}}</span>
@@ -151,16 +169,46 @@
                                                         <i class="icon ion-ios-star">{{review.star.number|round_number:1}}</i>
                                                     </span>
                                                 </div>
-                                                <p class="reviews__text">{{review.text}}</p>
+                                                <div class="{% if review.user == user %}user__review{% endif %}">
+                                                    <p class="reviews__text">
+                                                        {{review.text|text_slice:'0,100'}}<span id="review-dots{{review.id}}"></span>
+                                                        <span id="review-more{{review.id}}" class="more">{{review.text|text_slice:'100,full'}}</span>
+                                                        <span onclick="showMoreLess('review', {{review.id}})" class="myBtn" id="review-myBtn{{review.id}}">
+                                                            ...
+                                                        </span>
+                                                    </p>
+                                                </div>
+
                                             </li>
                                         {% endfor %}
                                     </ul>
 
-                                    <form action="#" class="form">
-                                        <input type="text" class="form__input" placeholder="Заголовок">
-                                        <textarea class="form__textarea" placeholder="Текст"></textarea>
-                                        <button type="button" class="form__btn">Добавить</button>
-                                    </form>
+                                    {% if user.is_authenticated and not user_reviewed %}
+                                        <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formReview">
+                                            {% csrf_token %}
+                                            <input name="title" type="text" class="form__input" placeholder="Заголовок">
+                                            <textarea name="text" class="form__textarea" placeholder="Текст"></textarea>
+                                            <div class="form__slider">
+                                                <div class="form__slider-rating" id="slider__rating"></div>
+                                                <div class="form__slider-value" id="form__slider-value"></div>
+                                                <input type="hidden" name="star" id="star">
+                                            </div>
+                                            <button type="submit" class="form__btn">Добавить</button>
+                                        </form>
+                                    {% elif user_reviewed %}
+                                        <div>
+                                            <h3 style="color:white;">
+                                                Вы уже написали <a href="#userReview" style="color: #ff55a5;">рецензию</a> на этот фильм
+                                            </h3>
+                                        </div>
+                                    {% else %}
+                                        <div>
+                                            <h3 style="color:white;">
+                                                <a href="{% url 'signin' %}" target="_blank" style="color: #ff55a5;">Авторизируйтесь</a>,
+                                                чтобы написать рецензию
+                                            </h3>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <!-- end reviews -->
@@ -239,3 +287,4 @@
         </div>
     </div>
 </section>
+

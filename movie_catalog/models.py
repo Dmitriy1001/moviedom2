@@ -1,9 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
-
-from embed_video.fields import EmbedVideoField
 
 
 class Movie(models.Model):
@@ -175,7 +173,7 @@ class Review(models.Model):
         Movie,
         related_name='reviews',
         on_delete=models.CASCADE,
-        verbose_name='Фильм'
+        verbose_name='Фильм',
     )
     star = models.ForeignKey(
         RatingStar,
@@ -183,8 +181,8 @@ class Review(models.Model):
         verbose_name='Звезда'
     )
     posted_at = models.DateTimeField(auto_now=True, verbose_name='Опубликовано')
-    title = models.CharField(max_length=255, blank=True, verbose_name='Заголовок')
-    text = models.TextField(blank=True, verbose_name='Текст')
+    title = models.CharField(max_length=255, verbose_name='Заголовок')
+    text = models.TextField(validators=[MinLengthValidator(700)], verbose_name='Текст')
 
     class Meta:
         verbose_name = 'Рецензию'
@@ -192,8 +190,13 @@ class Review(models.Model):
         ordering = ('-posted_at',)
 
     def clean(self):
-        if Review.objects.filter(user=self.user, movie=self.movie):
-            raise ValidationError('Пользователь уже поставил оценку этому фильму')
+        '''the user can write a review of the film only once'''
+        reviews = Review.objects.filter(user=self.user, movie=self.movie)
+        if reviews:
+            try:
+                reviews.get(id=self.id)
+            except Review.DoesNotExist:
+                raise ValidationError('Пользователь уже поставил оценку этому фильму')
 
     def __str__(self):
         return f'{self.star} - {self.movie}'

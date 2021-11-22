@@ -1,5 +1,3 @@
-import re
-
 from django import template
 
 
@@ -14,12 +12,17 @@ def round_number(number:(int,float), decimal_places:int=0):
 
 
 @register.filter
-def first_words(text, words_number:int):
-    return re.sub(
-        r'.+([,\.:-;])$',
-        lambda chars: chars[0].replace(chars[1], ''),
-        ' '.join(text.split()[:words_number]),
-    ) + '...'
+def text_slice(text, text_range):
+    text = text.split()
+    start, end = text_range.split(',')
+    if end != 'full':
+        return ' '.join(text[int(start):int(end)])
+    return ' '.join(text[int(start):])
+
+
+@register.filter
+def split_text(text, split_by:str=' '):
+    return text.split(split_by)
 
 
 @register.filter
