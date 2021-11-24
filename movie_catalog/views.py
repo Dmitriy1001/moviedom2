@@ -165,7 +165,8 @@ class MovieDetail(DetailView):
     def post(self, request, **kwargs):
         if 'star' in request.POST:
             return self.post_review(request)
-        return self.post_comment(request)
+        else:
+            return self.post_comment(request)
 
     def post_comment(self, request, **kwargs):
         movie = self.get_object()
@@ -179,7 +180,9 @@ class MovieDetail(DetailView):
             if not request.user.is_anonymous:
                 new_comment.user = request.user
             new_comment.save()
+            messages.success(request, 'Комментарий добавлен')
         return redirect('movie_detail', movie.category.slug, movie.slug)
+        #return render(request, self.template_name, {'comment_form': form})
 
     @method_decorator(login_required)
     def post_review(self, request, **kwargs):
@@ -198,7 +201,8 @@ class MovieDetail(DetailView):
         except ValidationError:
             return redirect('movie_detail', movie.category.slug, movie.slug)
         new_review.save()
-        messages.success(request, f'Оценка добавлена')
+        new_review.full_clean()
+        messages.success(request, 'Рецензия добавлена')
         return redirect('movie_detail', movie.category.slug, movie.slug)
 
     def get_context_data(self, **kwargs):
@@ -212,6 +216,7 @@ class MovieDetail(DetailView):
             context['user_reviewed'] = reviews.filter(user=self.request.user).exists()
         except TypeError:
             context['user_reviewed'] = None
+        context['comment_form'] = CommentForm()
         return context
 
 

@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class Movie(models.Model):
@@ -126,7 +128,11 @@ class Comment(models.Model):
         verbose_name='Пользователь',
     )
     posted_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
-    text = models.TextField(max_length=5000, verbose_name='Текст')
+    text = models.TextField(
+        max_length=5000,
+        validators=[MinLengthValidator(10)],
+        verbose_name='Текст',
+    )
     parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
