@@ -147,7 +147,6 @@ class Search(MovieList):
 
 class MovieDetail(DetailView):
     extra_context = {'page': 'movie_detail'}
-    form_class = CommentForm
 
     def get_queryset(self):
         return (
@@ -181,29 +180,37 @@ class MovieDetail(DetailView):
                 new_comment.user = request.user
             new_comment.save()
             messages.success(request, 'Комментарий добавлен')
-        return redirect('movie_detail', movie.category.slug, movie.slug)
-        #return render(request, self.template_name, {'comment_form': form})
+            return redirect('movie_detail', movie.category.slug, movie.slug)
+        self.object = self.get_object()
+        context =self.get_context_data()
+        context['comment_form'] = form
+        return render(request, 'movie_catalog/movie_detail.html', context)
 
     @method_decorator(login_required)
     def post_review(self, request, **kwargs):
-        new_review_data = request.POST
-        star = RatingStar.objects.get(number=float(new_review_data['star']))
         movie = self.get_object()
-        new_review = Review(
-            user=request.user,
-            movie=movie,
-            star=star,
-            title=new_review_data['title'],
-            text=new_review_data['text'],
-        )
-        try:
-            new_review.clean()
-        except ValidationError:
+        review_form_data = {
+            'csrfmiddlewaretoken': request.POST['csrfmiddlewaretoken'],
+            'title': request.POST['title'],
+            'text': request.POST['text'],
+            'star': RatingStar.objects.get(number=float(request.POST['star'])),
+        }
+        form = ReviewForm(review_form_data)
+        if form.is_valid():
+            new_review = form.save(commit=False)
+            new_review.movie = movie
+            new_review.user = request.user
+            try:
+                new_review.clean()
+            except ValidationError:
+                return redirect('movie_detail', movie.category.slug, movie.slug)
+            new_review.save()
+            messages.success(request, 'Рецензия добавлена')
             return redirect('movie_detail', movie.category.slug, movie.slug)
-        new_review.save()
-        new_review.full_clean()
-        messages.success(request, 'Рецензия добавлена')
-        return redirect('movie_detail', movie.category.slug, movie.slug)
+        self.object = self.get_object()
+        context = self.get_context_data()
+        context['review_form'] = form
+        return render(request, 'movie_catalog/movie_detail.html', context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -216,9 +223,7 @@ class MovieDetail(DetailView):
             context['user_reviewed'] = reviews.filter(user=self.request.user).exists()
         except TypeError:
             context['user_reviewed'] = None
-        context['comment_form'] = CommentForm()
         return context
-
 
 class About(TemplateView):
     template_name = 'movie_catalog/about.html'

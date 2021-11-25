@@ -149,7 +149,12 @@
                                     <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formComment">
                                         {% csrf_token %}
                                         <input type="hidden" name="parent" id="parent">
-                                        {% if comment_form.text.errors %}<h1 style="color:white;">YES</h1>{% endif %}
+                                        {% if comment_form.text.errors %}
+                                            <span class="sign__text" style="color:#ff55a5;">
+                                                <b>{{comment_form.text.errors}}</b>
+                                            </span>
+                                        {% endif %}
+                                        <br>
                                         <textarea id="text" name="text" class="form__textarea" placeholder="Ваш комментарий"></textarea>
                                         <button type="submit" class="form__btn">Добавить</button>
                                     </form>
@@ -205,7 +210,13 @@
                                     {% if user.is_authenticated and not user_reviewed %}
                                         <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formReview">
                                             {% csrf_token %}
+                                            {% if review_form.title.errors %}
+                                                <span class="sign__text" style="color:#ff55a5;"><b>{{review_form.title.errors}}</b><br>
+                                            {% endif %}
                                             <input name="title" type="text" class="form__input" placeholder="Заголовок">
+                                             {% if review_form.text.errors %}
+                                                <span class="sign__text" style="color:#ff55a5;"><b>{{review_form.text.errors}}</b><br>
+                                            {% endif %}
                                             <textarea name="text" class="form__textarea" placeholder="Текст"></textarea>
                                             <div class="form__slider">
                                                 <div class="form__slider-rating" id="slider__rating"></div>

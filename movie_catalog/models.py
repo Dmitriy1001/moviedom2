@@ -197,7 +197,10 @@ class Review(models.Model):
 
     def clean(self):
         '''the user can write a review of the film only once'''
-        reviews = Review.objects.filter(user=self.user, movie=self.movie)
+        try:
+            reviews = Review.objects.filter(user=self.user, movie=self.movie)
+        except (Review.user.RelatedObjectDoesNotExist, Review.movie.RelatedObjectDoesNotExist):
+            reviews = None
         if reviews:
             try:
                 reviews.get(id=self.id)
