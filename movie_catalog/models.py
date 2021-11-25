@@ -187,7 +187,11 @@ class Review(models.Model):
         verbose_name='Звезда'
     )
     posted_at = models.DateTimeField(auto_now=True, verbose_name='Опубликовано')
-    title = models.CharField(max_length=255, verbose_name='Заголовок')
+    title = models.CharField(
+        validators=[MinLengthValidator(10)],
+        max_length=100,
+        verbose_name='Заголовок'
+    )
     text = models.TextField(validators=[MinLengthValidator(700)], verbose_name='Текст')
 
     class Meta:

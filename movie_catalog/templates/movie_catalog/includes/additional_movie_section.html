@@ -129,7 +129,7 @@
     <!--                                                                <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
     <!--                                                                <button type="button"><i class="icon ion-md-thumbs-down"></i>3</button>-->
     <!--                                                            </div>-->
-                                                                <a href="#formComment" onclick="addComment('{% if comment.user %}{{comment.user.username}}{% else %}Гость{% endif %}', '{{reply.id}}')">
+                                                                <a href="#formComment" onclick="addComment('{% if reply.user %}{{reply.user.username}}{% else %}Гость{% endif %}', '{{reply.id}}')">
                                                                     <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>
                                                                 </a>
                                                             </div>
@@ -150,12 +150,10 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="parent" id="parent">
                                         {% if comment_form.text.errors %}
-                                            <span class="sign__text" style="color:#ff55a5;">
-                                                <b>{{comment_form.text.errors}}</b>
-                                            </span>
+                                            <span class="sign__text" style="color:#ff55a5;"><b>{{comment_form.text.errors}}</b></span>
                                         {% endif %}
                                         <br>
-                                        <textarea id="text" name="text" class="form__textarea" placeholder="Ваш комментарий"></textarea>
+                                        <textarea name="text" id="commentText" class="form__textarea" placeholder="Ваш комментарий" required minlength="10"></textarea>
                                         <button type="submit" class="form__btn">Добавить</button>
                                     </form>
                                 </div>
@@ -213,11 +211,11 @@
                                             {% if review_form.title.errors %}
                                                 <span class="sign__text" style="color:#ff55a5;"><b>{{review_form.title.errors}}</b><br>
                                             {% endif %}
-                                            <input name="title" type="text" class="form__input" placeholder="Заголовок">
+                                            <input name="title" id="reviewTitle" type="text" class="form__input" placeholder="Заголовок" required minlength="10" maxlength="100">
                                              {% if review_form.text.errors %}
                                                 <span class="sign__text" style="color:#ff55a5;"><b>{{review_form.text.errors}}</b><br>
                                             {% endif %}
-                                            <textarea name="text" class="form__textarea" placeholder="Текст"></textarea>
+                                            <textarea name="text" id="reviewText" class="form__textarea" placeholder="Текст" required minlength="700"></textarea>
                                             <div class="form__slider">
                                                 <div class="form__slider-rating" id="slider__rating"></div>
                                                 <div class="form__slider-value" id="form__slider-value"></div>
@@ -317,4 +315,7 @@
         </div>
     </div>
 </section>
+
+
+
 

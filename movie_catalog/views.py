@@ -182,7 +182,7 @@ class MovieDetail(DetailView):
             messages.success(request, 'Комментарий добавлен')
             return redirect('movie_detail', movie.category.slug, movie.slug)
         self.object = self.get_object()
-        context =self.get_context_data()
+        context = self.get_context_data()
         context['comment_form'] = form
         return render(request, 'movie_catalog/movie_detail.html', context)
 
