@@ -10,12 +10,12 @@
                     <ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link {% if not tab or tab == 'comments' %}active{% endif %}" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">
-                                Комментарии
+                                Комментарии({{none_parent_comments.paginator.object_list|length}})
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if tab == 'reviews' %}active{% endif %}" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">
-                                Рецензии({{reviews|length}})
+                                Рецензии({{reviews.paginator.object_list|length}})
                             </a>
                         </li>
                         <li class="nav-item">
@@ -27,14 +27,14 @@
                     <!-- content mobile tabs nav -->
                     <div class="content__mobile-tabs" id="content__mobile-tabs">
                         <div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <input type="button" value="Комментарии">
+                            <input type="button" value="Комментарии({{none_parent_comments.paginator.object_list|length}})">
                             <span></span>
                         </div>
 
                         <div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
                             <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Комментарии</a></li>
-                                <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Рецензии({{reviews|length}})</a></li>
+                                <li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Комментарии({{none_parent_comments.paginator.object_list|length}})</a></li>
+                                <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Рецензии({{reviews.paginator.object_list|length}})</a></li>
                                 <li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Кадры</a></li>
                             </ul>
                         </div>
@@ -231,7 +231,9 @@
                                     {% elif user_reviewed %}
                                         <div>
                                             <h3 style="color:white;">
-                                                Вы уже написали <a href="#userReview" style="color: #ff55a5;">рецензию</a> на этот фильм
+                                                Вы уже написали
+                                                <a href="?tab=reviews&rev_p={{user_review_page_number}}#userReview" style="color: #ff55a5;">рецензию</a>
+                                                на этот фильм
                                             </h3>
                                         </div>
                                     {% else %}

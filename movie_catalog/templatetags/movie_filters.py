@@ -1,3 +1,5 @@
+from math import ceil
+
 from django import template
 from django.db.models import Count
 
@@ -48,3 +50,13 @@ def comments_count(none_parent_comments):
 def change_number_sign(number: (int, float)):
     number = 0 if number is None else number
     return -number if number > 0 else abs(number)
+
+
+#@register.filter
+# def user_review_on_page(reviews, user):
+#     user_review = reviews.object_list.get(user=user)
+#     review_per_page = reviews.per_page
+#     reviews_list = list(reviews.object_list)
+#     user_review_index = reviews_list.index(user_review) + 1
+#     return ceil(user_review_index / review_per_page)
+

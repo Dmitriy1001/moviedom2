@@ -1,4 +1,5 @@
 from datetime import datetime
+from math import ceil
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -148,6 +149,8 @@ class Search(MovieList):
 
 class MovieDetail(DetailView):
     extra_context = {'page': 'movie_detail'}
+    comments_per_page = 3
+    reviews_per_page = 2
 
     def get_queryset(self):
         return (
@@ -218,20 +221,32 @@ class MovieDetail(DetailView):
         page_number = self.request.GET.get(page_name, 1)
         return paginator.get_page(page_number)
 
+    def reviews_info(self, reviews):
+        try:
+            user_reviewed = reviews.filter(user=self.request.user).exists()
+            user_review = reviews.get(user=self.request.user)
+            user_review_index = list(reviews).index(user_review) + 1
+            user_review_page_number = ceil(user_review_index / self.reviews_per_page)
+        except TypeError:
+            user_reviewed = False
+            user_review_page_number = None
+        return {
+            'user_reviewed': user_reviewed,
+            'user_review_page_number': user_review_page_number,
+            'reviews': self.pagination(reviews, 2, 'rev_p')
+        }
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         movie = self.get_object()
-        reviews = movie.reviews.all()
         context['title'] = movie.category.name
+        context['tab'] = self.request.GET.get('tab')
         context['none_parent_comments'] = (
             self.pagination(movie.comments.filter(parent=None), 3, 'com_p')
         )
-        context['reviews'] = self.pagination(reviews, 1, 'rev_p')
-        try:
-            context['user_reviewed'] = reviews.filter(user=self.request.user).exists()
-        except TypeError:
-            context['user_reviewed'] = False
-        context['tab'] = self.request.GET.get('tab')
+        reviews = movie.reviews.all()
+        if reviews:
+            context.update(self.reviews_info(reviews))
         return context
 
 class About(TemplateView):
