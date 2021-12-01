@@ -1,6 +1,6 @@
 {% load static movie_filters %}
 
-<section class="content">
+<section class="content" id="tabs">
     <div class="content__head">
         <div class="container">
             <div class="row">
@@ -9,10 +9,14 @@
                     <!-- content tabs nav -->
                     <ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Комментарии</a>
+                            <a class="nav-link {% if not tab or tab == 'comments' %}active{% endif %}" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">
+                                Комментарии
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Рецензии</a>
+                            <a class="nav-link {% if tab == 'reviews' %}active{% endif %}" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">
+                                Рецензии({{reviews|length}})
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Кадры</a>
@@ -30,7 +34,7 @@
                         <div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Комментарии</a></li>
-                                <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Рецензии</a></li>
+                                <li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Рецензии({{reviews|length}})</a></li>
                                 <li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Кадры</a></li>
                             </ul>
                         </div>
@@ -46,15 +50,14 @@
             <div class="col-12 col-lg-8 col-xl-8">
                 <!-- content tabs -->
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+                    <div class="tab-pane fade {% if not tab or tab == 'comments' %}show active{% endif %}" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
                         <div class="row">
                             <!-- comments -->
                             <div class="col-12">
                                 <div class="comments" id="comments_section">
                                     <ul class="comments__list">
-
-                                        {% if none_parent_comments %}
-                                            {% for comment in none_parent_comments %}
+                                        {% if none_parent_comments.object_list %}
+                                            {% for comment in none_parent_comments.object_list %}
                                                 <li class="comments__item">
                                                     <div class="comments__autor">
                                                         {% if not comment.user.profile.avatar %}
@@ -134,9 +137,12 @@
                                                                 </a>
                                                             </div>
                                                         </li>
+
                                                     {% endfor %}
+
                                                 {% endif %}
                                             {% endfor %}
+                                            {% include 'movie_catalog/includes/comments_pagination.html' %}
 
                                         {% else %}
                                             <div>
@@ -163,7 +169,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+                    <div class="tab-pane fade {% if tab == 'reviews' %}show active{% endif %}" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
                         <div class="row">
 
                             <!-- reviews -->
@@ -172,7 +178,7 @@
                                     <ul class="reviews__list">
 
                                         {% if reviews %}
-                                            {% for review in reviews %}
+                                            {% for review in reviews.object_list %}
                                                 <li class="reviews__item" id="{% if review.user == user %}userReview{% endif %}">
                                                     <div class="reviews__autor">
                                                         <img class="reviews__avatar" src="{{review.user.profile.avatar.url}}" alt="">
@@ -197,10 +203,9 @@
 
                                                 </li>
                                             {% endfor %}
+                                            {% include 'movie_catalog/includes/reviews_pagination.html' %}
                                         {% else %}
-                                            <div>
-                                                <h3 style="color:white;">Здесь пока нет ни одной рецензии...</h3>
-                                            </div>
+                                            <div><h3 style="color:white;">Здесь пока нет ни одной рецензии...</h3></div>
                                             <br>
                                         {% endif %}
                                     </ul>

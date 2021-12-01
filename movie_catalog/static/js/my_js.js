@@ -22,6 +22,7 @@ function addComment(name, id) {
 };
 
 
+// forms validation
 const commentText = document.getElementById("commentText");
 const reviewTitle = document.getElementById("reviewTitle");
 const reviewText = document.getElementById("reviewText");
@@ -57,3 +58,9 @@ reviewText.addEventListener("invalid", function (event) {
     	reviewText.setCustomValidity("");
     }
 });
+// end forms validation
+
+
+// comments pagination
+
+// end comments pagination

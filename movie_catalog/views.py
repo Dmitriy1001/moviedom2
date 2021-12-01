@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import Http404
 from django.shortcuts import redirect, render
@@ -212,17 +213,25 @@ class MovieDetail(DetailView):
         context['review_form'] = form
         return render(request, 'movie_catalog/movie_detail.html', context)
 
+    def pagination(self, queryset, per_page, page_name):
+        paginator = Paginator(queryset, per_page)
+        page_number = self.request.GET.get(page_name, 1)
+        return paginator.get_page(page_number)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         movie = self.get_object()
         reviews = movie.reviews.all()
         context['title'] = movie.category.name
-        context['none_parent_comments'] = movie.comments.filter(parent=None)
-        context['reviews'] = reviews
+        context['none_parent_comments'] = (
+            self.pagination(movie.comments.filter(parent=None), 3, 'com_p')
+        )
+        context['reviews'] = self.pagination(reviews, 1, 'rev_p')
         try:
             context['user_reviewed'] = reviews.filter(user=self.request.user).exists()
         except TypeError:
-            context['user_reviewed'] = None
+            context['user_reviewed'] = False
+        context['tab'] = self.request.GET.get('tab')
         return context
 
 class About(TemplateView):

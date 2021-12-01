@@ -1,5 +1,5 @@
 from django import template
-
+from django.db.models import Count
 
 register = template.Library()
 
@@ -34,3 +34,17 @@ def isnumber(value):
 def format_youtube_url(url:str):
     '''formats youtube link for iframe tag'''
     return url.replace('watch?v=', 'embed/')
+
+
+@register.filter
+def comments_count(none_parent_comments):
+    return (
+            len(none_parent_comments) +
+            none_parent_comments.aggregate(Count('replies'))['replies__count']
+    )
+
+
+@register.filter
+def change_number_sign(number: (int, float)):
+    number = 0 if number is None else number
+    return -number if number > 0 else abs(number)

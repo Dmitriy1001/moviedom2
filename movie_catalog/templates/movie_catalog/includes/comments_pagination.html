@@ -1,0 +1,45 @@
+{% load movie_filters %}
+
+{% if none_parent_comments.has_other_pages %}
+  <div align="center">
+    {% with comments_tab=none_parent_comments %}
+
+    <ul class="tabs-pagination modal-2">
+      {% if comments_tab.has_previous %}
+        <li>
+          <a href="?tab=comments&com_p={{comments_tab.number|add:-1}}#tabs" class="prev">&laquo</a>
+        </li>
+      {% endif %}
+      {% if comments_tab.number|add:-1 > 3 %}
+        <li><a href="?tab=comments&com_p=1#tabs">1</a></li>
+        <li class="pagination-dots"><a href="" onclick="return false;">...</a></li>
+      {% endif %}
+
+      {% for number in comments_tab.paginator.page_range %}
+        <li>
+          {% if comments_tab.number == number %}
+            <a href="?tab=comments&com_p={{number}}#tabs" class="active">{{number}}</a>
+          {% elif number > comments_tab.number|add:-3 and number < comments_tab.number|add:3 %}
+            <a href="?tab=comments&com_p={{number}}#tabs">{{number}}</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+
+      {% if comments_tab.has_next %}
+        {% if comments_tab.paginator.num_pages|change_number_sign|add:comments_tab.number|change_number_sign > 3 %}
+          <li class="pagination-dots"><a href="" onclick="return false;">...</a></li>
+          <li>
+            <a href="?tab=comments&com_p={{comments_tab.paginator.num_pages}}#tabs">
+              {{comments_tab.paginator.num_pages}}
+            </a>
+          </li>
+        {% endif %}
+        <li>
+          <a href="?tab=comments&com_p={{comments_tab.number|add:1}}#tabs" class="next">&raquo;</a>
+        </li>
+      {% endif %}
+    </ul>
+
+    {% endwith %}
+  </div>
+{% endif %}

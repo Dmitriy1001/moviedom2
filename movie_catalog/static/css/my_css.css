@@ -1,3 +1,4 @@
+/* pop-up messages */
 * {
     margin: 0;
 }
@@ -29,3 +30,70 @@
   }
 
 }
+/* end pop-up messages */
+
+
+/* comments pagination */
+.tabs-pagination {
+  list-style: none;
+  display: inline-block;
+  padding: 0;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.tabs-pagination li {
+  display: inline;
+  text-align: center;
+}
+.tabs-pagination a {
+  float: left;
+  display: block;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 5px 12px;
+  color: #fff;
+  margin-left: -1px;
+  border: 2px solid transparent;
+  line-height: 1.5;
+}
+.tabs-pagination a.active {
+  cursor: default;
+}
+.tabs-pagination a:active {
+  outline: none;
+}
+
+.modal-2 li:first-child a {
+  -moz-border-radius: 50px 0 0 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px 0 0 50px;
+}
+.modal-2 li:last-child a {
+  -moz-border-radius: 0 50px 50px 0;
+  -webkit-border-radius: 0;
+  border-radius: 0 50px 50px 0;
+}
+.modal-2 a {
+  border-color: black;
+  color: #999;
+  background: #2b2b31;
+}
+.modal-2 a:hover {
+  color: #E34E48;
+  background-color: #eee;
+}
+.modal-2 a.active, .modal-2 a:active {
+  border-color: #ff55a5s;
+  background: #ff55a5;
+  color: #fff;
+}
+
+
+.pagination-dots a:hover {
+
+    cursor: default;
+    background: #2b2b31;
+    color: #999;
+
+}
+/* end comments pagination */

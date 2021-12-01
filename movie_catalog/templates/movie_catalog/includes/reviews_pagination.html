@@ -1,0 +1,45 @@
+{% load movie_filters %}
+
+{% if reviews.has_other_pages %}
+  <div align="center">
+    {% with reviews_tab=reviews %}
+
+    <ul class="tabs-pagination modal-2">
+      {% if reviews_tab.has_previous %}
+        <li>
+          <a href="?tab=reviews&rev_p={{reviews_tab.number|add:-1}}#tabs" class="prev">&laquo</a>
+        </li>
+      {% endif %}
+      {% if reviews_tab.number|add:-1 > 3 %}
+        <li><a href="?tab=reviews&rev_p=1#tabs">1</a></li>
+        <li class="pagination-dots"><a href="" onclick="return false;">...</a></li>
+      {% endif %}
+
+      {% for number in reviews_tab.paginator.page_range %}
+        <li>
+          {% if reviews_tab.number == number %}
+            <a href="?tab=reviews&rev_p={{number}}#tabs" class="active">{{number}}</a>
+          {% elif number > reviews_tab.number|add:-3 and number < reviews_tab.number|add:3 %}
+            <a href="?tab=reviews&rev_p={{number}}#tabs">{{number}}</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+
+      {% if reviews_tab.has_next %}
+        {% if reviews_tab.paginator.num_pages|change_number_sign|add:reviews_tab.number|change_number_sign > 3 %}
+          <li class="pagination-dots"><a href="" onclick="return false;">...</a></li>
+          <li>
+            <a href="?tab=reviews&rev_p={{reviews_tab.paginator.num_pages}}#tabs">
+              {{reviews_tab.paginator.num_pages}}
+            </a>
+          </li>
+        {% endif %}
+        <li>
+          <a href="?tab=reviews&rev_p={{reviews_tab.number|add:1}}#tabs" class="next">&raquo;</a>
+        </li>
+      {% endif %}
+    </ul>
+
+    {% endwith %}
+  </div>
+{% endif %}
