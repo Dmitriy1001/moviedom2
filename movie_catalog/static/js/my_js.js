@@ -1,25 +1,26 @@
-function showMoreLess(model, id) {
+function showMoreLess(model, id, more='...', less='...') {
   var dots = document.getElementById(model + "-dots" + id);
   var moreText = document.getElementById(model + "-more" + id);
   var btnText = document.getElementById(model + "-myBtn" + id);
 
   if (dots.style.display === "none") {
     dots.style.display = "inline";
-    btnText.innerHTML = "...";
+    btnText.innerHTML = more
     moreText.style.display = "none";
   } else {
      dots.style.display = "none";
-     btnText.innerHTML = "...";
+     btnText.innerHTML = less;
      moreText.style.display = "inline";
   }
-
 }
 
 
+// reply for comment
 function addComment(name, id) {
     document.getElementById("parent").value = id;
 	document.getElementById("commentText").innerText = `${name}, `;
 };
+// end reply for comment
 
 
 // forms validation
@@ -61,6 +62,13 @@ reviewText.addEventListener("invalid", function (event) {
 // end forms validation
 
 
-// comments pagination
-
-// end comments pagination
+// show replies
+function toggle_visibility(id)
+    {
+        var e = document.getElementById(id);
+        if ( e.style.display == 'block' )
+            e.style.display = 'none';
+        else
+            e.style.display = 'block';
+    }
+// end show replies

@@ -8,19 +8,10 @@
 	<!-- details -->
 	<section class="section details">
 		<!-- details background -->
-		<div class="details__bg" data-bg="{% static 'img/home/home__bg.jpg' %}">
-			{% for msg in messages %}
-				{% if msg.message == 'Комментарий добавлен' %}
-					<h1 class="toast">Комментарий добавлен</h1>
-				{% elif msg.message == 'Рецензия добавлена' %}
-					<h1 class="toast">Рецензия добавлена</h1>
-				{% endif %}
-			{% endfor %}
-		</div>
+		<div class="details__bg" data-bg="{% static 'img/home/home__bg.jpg' %}"></div>
 		<!-- end details background -->
 
 		<!-- details content -->
-
 		<div class="container">
 			<div class="row">
 				<!-- title -->

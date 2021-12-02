@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import Http404
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, DetailView
 
@@ -183,8 +184,16 @@ class MovieDetail(DetailView):
             if not request.user.is_anonymous:
                 new_comment.user = request.user
             new_comment.save()
-            messages.success(request, 'Комментарий добавлен')
-            return redirect('movie_detail', movie.category.slug, movie.slug)
+            msg = 'Комментарий добавлен' if not new_comment.parent else 'Ответ добавлен'
+            extra_tags = new_comment.parent.id if new_comment.parent else new_comment.id
+            messages.success(request, msg, extra_tags=extra_tags)
+            page = 1 if not new_comment.parent else request.POST.get('page', 1)
+            return redirect(
+                '{}?tab=comments&com_p={}#tabs'.format(
+                    reverse('movie_detail', args=(movie.category.slug, movie.slug)),
+                    page,
+                )
+            )
         self.object = self.get_object()
         context = self.get_context_data()
         context['comment_form'] = form
@@ -209,8 +218,12 @@ class MovieDetail(DetailView):
             except ValidationError:
                 return redirect('movie_detail', movie.category.slug, movie.slug)
             new_review.save()
-            messages.success(request, 'Рецензия добавлена')
-            return redirect('movie_detail', movie.category.slug, movie.slug)
+            messages.success(request, 'Рецензия добавлена', extra_tags=new_review.id)
+            return redirect(
+                '{}?tab=reviews&rev_p=1#tabs'.format(
+                    reverse('movie_detail', args=(movie.category.slug, movie.slug))
+                )
+            )
         self.object = self.get_object()
         context = self.get_context_data()
         context['review_form'] = form
@@ -224,16 +237,19 @@ class MovieDetail(DetailView):
     def reviews_info(self, reviews):
         try:
             user_reviewed = reviews.filter(user=self.request.user).exists()
-            user_review = reviews.get(user=self.request.user)
-            user_review_index = list(reviews).index(user_review) + 1
-            user_review_page_number = ceil(user_review_index / self.reviews_per_page)
+            try:
+                user_review = reviews.get(user=self.request.user)
+                user_review_index = list(reviews).index(user_review) + 1
+                user_review_page_number = ceil(user_review_index / self.reviews_per_page)
+            except Review.DoesNotExist:
+                user_review_page_number = None
         except TypeError:
             user_reviewed = False
             user_review_page_number = None
         return {
             'user_reviewed': user_reviewed,
             'user_review_page_number': user_review_page_number,
-            'reviews': self.pagination(reviews, 2, 'rev_p')
+            'reviews': self.pagination(reviews, 3, 'rev_p')
         }
 
     def get_context_data(self, **kwargs):
@@ -241,8 +257,10 @@ class MovieDetail(DetailView):
         movie = self.get_object()
         context['title'] = movie.category.name
         context['tab'] = self.request.GET.get('tab')
-        context['none_parent_comments'] = (
-            self.pagination(movie.comments.filter(parent=None), 3, 'com_p')
+        context['none_parent_comments'] = self.pagination(
+            movie.comments.filter(parent=None).order_by('-posted_at'),
+            3,
+            'com_p',
         )
         reviews = movie.reviews.all()
         if reviews:
@@ -252,3 +270,4 @@ class MovieDetail(DetailView):
 class About(TemplateView):
     template_name = 'movie_catalog/about.html'
     extra_context = {'page': 'about'}
+

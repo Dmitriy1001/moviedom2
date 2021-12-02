@@ -145,7 +145,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ('-posted_at',)
+        ordering = ('posted_at',)
 
     def __str__(self):
         return f'{self.movie.title} - {self.text[:30]}'

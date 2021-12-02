@@ -52,11 +52,6 @@ def change_number_sign(number: (int, float)):
     return -number if number > 0 else abs(number)
 
 
-#@register.filter
-# def user_review_on_page(reviews, user):
-#     user_review = reviews.object_list.get(user=user)
-#     review_per_page = reviews.per_page
-#     reviews_list = list(reviews.object_list)
-#     user_review_index = reviews_list.index(user_review) + 1
-#     return ceil(user_review_index / review_per_page)
-
+@register.filter
+def convert_to(value, convert_type):
+    return convert_type(value)
