@@ -177,23 +177,33 @@ class MovieDetail(DetailView):
         form = CommentForm(request.POST)
         if form.is_valid():
             new_comment = form.save(commit=False)
-            if request.POST.get('parent', None):
+            try:
                 parent = Comment.objects.get(id=int(request.POST.get('parent')))
-                new_comment.parent = parent if not parent.parent else parent.parent
-            new_comment.movie = movie
-            if not request.user.is_anonymous:
-                new_comment.user = request.user
-            new_comment.save()
-            msg = 'Комментарий добавлен' if not new_comment.parent else 'Ответ добавлен'
-            extra_tags = new_comment.parent.id if new_comment.parent else new_comment.id
-            messages.success(request, msg, extra_tags=extra_tags)
-            page = 1 if not new_comment.parent else request.POST.get('page', 1)
+                comment_parent = parent if not parent.parent else parent.parent
+            except ValueError:
+                comment_parent = None
+            if not comment_parent or (comment_parent and comment_parent.replies.count() < 10):
+                new_comment.parent = comment_parent
+                new_comment.movie = movie
+                if not request.user.is_anonymous:
+                    new_comment.user = request.user
+                new_comment.save()
+                msg = 'Комментарий добавлен' if not new_comment.parent else 'Ответ добавлен'
+                extra_tags = new_comment.parent.id if new_comment.parent else new_comment.id
+                page = 1 if not new_comment.parent else request.POST.get('page', 1)
+            elif comment_parent and comment_parent.replies.count() == 10:
+                msg = 'Максимальное кол-во ответов на комментарий - 10'
+                extra_tags = comment_parent.id
+                page = request.POST.get('page', 1)
+            messages.info(request, msg, extra_tags=extra_tags)
             return redirect(
-                '{}?tab=comments&com_p={}#tabs'.format(
+                '{}?tab=comments&com_p={}#com{}'.format(
                     reverse('movie_detail', args=(movie.category.slug, movie.slug)),
                     page,
+                    extra_tags,
                 )
             )
+
         self.object = self.get_object()
         context = self.get_context_data()
         context['comment_form'] = form
@@ -259,7 +269,7 @@ class MovieDetail(DetailView):
         context['tab'] = self.request.GET.get('tab')
         context['none_parent_comments'] = self.pagination(
             movie.comments.filter(parent=None).order_by('-posted_at'),
-            3,
+            9,
             'com_p',
         )
         reviews = movie.reviews.all()

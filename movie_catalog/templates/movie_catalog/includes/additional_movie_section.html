@@ -58,7 +58,7 @@
                                     <ul class="comments__list">
                                         {% if none_parent_comments.object_list %}
                                             {% for comment in none_parent_comments.object_list %}
-                                                <li class="comments__item">
+                                                <li class="comments__item" id="com{{comment.id}}">
                                                     <div class="comments__autor">
                                                         {% if not comment.user.profile.avatar %}
                                                             <img class="comments__avatar" src="{% static 'img/none_avatar.jpg' %}" alt="">
