@@ -240,6 +240,8 @@ class MovieDetail(DetailView):
         return render(request, 'movie_catalog/movie_detail.html', context)
 
     def pagination(self, queryset, per_page, page_name):
+        for i in range(len(queryset)):
+            queryset[i].index_number = len(queryset) - i
         paginator = Paginator(queryset, per_page)
         page_number = self.request.GET.get(page_name, 1)
         return paginator.get_page(page_number)
@@ -269,7 +271,7 @@ class MovieDetail(DetailView):
         context['tab'] = self.request.GET.get('tab')
         context['none_parent_comments'] = self.pagination(
             movie.comments.filter(parent=None).order_by('-posted_at'),
-            9,
+            10,
             'com_p',
         )
         reviews = movie.reviews.all()

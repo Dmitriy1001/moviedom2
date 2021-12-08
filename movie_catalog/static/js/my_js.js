@@ -16,9 +16,9 @@ function showMoreLess(model, id, more='...', less='...') {
 
 
 // reply for comment
-function addComment(name, id) {
+function addComment(commentNumber, id) {
     document.getElementById("parent").value = id;
-	document.getElementById("commentText").innerText = `${name}, `;
+	document.getElementById("commentText").innerText = `#${commentNumber}. `;
 };
 // end reply for comment
 

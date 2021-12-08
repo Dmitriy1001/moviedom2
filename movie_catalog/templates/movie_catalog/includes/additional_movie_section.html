@@ -58,56 +58,58 @@
                                     <ul class="comments__list">
                                         {% if none_parent_comments.object_list %}
                                             {% for comment in none_parent_comments.object_list %}
-                                                <li class="comments__item" id="com{{comment.id}}">
-                                                    <div class="comments__autor">
-                                                        {% if not comment.user.profile.avatar %}
-                                                            <img class="comments__avatar" src="{% static 'img/none_avatar.jpg' %}" alt="">
-                                                        {% else %}
-                                                            <img class="comments__avatar" src="{{comment.user.profile.avatar.url}}" alt="">
-                                                        {% endif %}
-                                                        <span class="comments__name">
-                                                            {% if not comment.user %}Гость
-                                                            {% elif comment.user.is_staff %}<b><i>{{comment.user}}</i></b>
-                                                            {% else %}{{comment.user}}
-                                                            {% endif %}
-                                                        </span>
-                                                        <span class="comments__time">{{comment.posted_at}}</span>
-                                                    </div>
-                                                    <div class="{% if comment.user == user %}user__review{% endif %}">
-                                                        <p class="reviews__text">
-                                                            {% if comment.text|split_text|length <= 100 %}
-                                                                {{comment.text}}
+                                                <span id="com{{comment.id}}">
+                                                    <li class="comments__item" >
+                                                        <div class="comments__autor">
+                                                            {% if not comment.user.profile.avatar %}
+                                                                <img class="comments__avatar" src="{% static 'img/none_avatar.jpg' %}" alt="">
                                                             {% else %}
-                                                                {{comment.text|text_slice:'0,100'}}<span id="comment-dots{{comment.id}}"></span>
-                                                                <span id="comment-more{{comment.id}}" class="more">{{comment.text|text_slice:'100,full'}}</span>
-                                                                <span onclick="showMoreLess('comment', {{comment.id}})" class="myBtn" id="comment-myBtn{{comment.id}}">
-                                                                    ...
-                                                                </span>
+                                                                <img class="comments__avatar" src="{{comment.user.profile.avatar.url}}" alt="">
                                                             {% endif %}
-                                                        </p>
-                                                    </div>
-                                                    <div class="comments__actions">
-                                                        <div class="comments__rate">
-<!--                                                            <button type="button"><i class="icon ion-md-thumbs-up"></i>12</button>-->
-<!--                                                            <button type="button">7<i class="icon ion-md-thumbs-down"></i></button>-->
+                                                            <span class="comments__name">
+                                                                {% if not comment.user %}Гость
+                                                                {% elif comment.user.is_staff %}<b style="color:#ff55a5;">{{comment.user}}</b>
+                                                                {% else %}{{comment.user}}
+                                                                {% endif %}
+                                                            </span>
+                                                            <span class="comments__time">{{comment.posted_at}}</span>
                                                         </div>
-                                                        {% for msg in messages %}
-                                                            {% if comment.id == msg.extra_tags|add:0 %}
-                                                                <span class="toast">{{msg}}</span>
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <div class="{% if comment.user == user %}user__review{% endif %}">
+                                                            <p class="reviews__text">
+                                                                {% if comment.text|split_text|length <= 100 %}
+                                                                    {{comment.text}}
+                                                                {% else %}
+                                                                    {{comment.text|text_slice:'0,100'}}<span id="comment-dots{{comment.id}}"></span>
+                                                                    <span id="comment-more{{comment.id}}" class="more">{{comment.text|text_slice:'100,full'}}</span>
+                                                                    <span onclick="showMoreLess('comment', {{comment.id}})" class="myBtn" id="comment-myBtn{{comment.id}}">
+                                                                        ...
+                                                                    </span>
+                                                                {% endif %}
+                                                            </p>
+                                                        </div>
+                                                        <div class="comments__actions">
+                                                            <div class="comments__rate">
+                                                                <button style="cursor:default;">#{{comment.index_number}}</button>
+    <!--                                                            <button type="button"><i class="icon ion-md-thumbs-up"></i>12</button>-->
+    <!--                                                            <button type="button">7<i class="icon ion-md-thumbs-down"></i></button>-->
+                                                            </div>
+                                                            {% for msg in messages %}
+                                                                {% if comment.id == msg.extra_tags|add:0 %}
+                                                                    <span class="toast">{{msg}}</span>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            {% if comment.replies.count %}
+                                                                <button type="button" onclick="toggle_visibility({{comment.id}})">
+                                                                    Ответы({{comment.replies.count}})
+                                                                </button>
                                                             {% endif %}
-                                                        {% endfor %}
-                                                        {% if comment.replies.count %}
-                                                            <button type="button" onclick="toggle_visibility({{comment.id}})">
-                                                                Ответы({{comment.replies.count}})
-                                                            </button>
-                                                        {% endif %}
-                                                        <a href="#formComment" onclick="addComment('{% if comment.user %}{{comment.user.username}}{% else %}Гость{% endif %}', '{{comment.id}}')">
-                                                            <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>
-                                                        </a>
-                                                    </div>
-                                                </li>
-
+                                                            <a href="#formComment" onclick="addComment('{{comment.index_number}}', '{{comment.id}}')">
+                                                                <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>
+                                                            </a>
+                                                        </div>
+                                                    </li>
+                                                </span>
                                                 {% if comment.replies.all %}
                                                     <span id="{{comment.id}}" style="display:none">
                                                         {% for reply in comment.replies.all %}
@@ -140,11 +142,13 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="comments__actions">
-        <!--                                                            <div class="comments__rate">-->
-        <!--                                                                <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
-        <!--                                                                <button type="button"><i class="icon ion-md-thumbs-down"></i>3</button>-->
-        <!--                                                            </div>-->
-                                                                    <a href="#formComment" onclick="addComment('{% if reply.user %}{{reply.user.username}}{% else %}Гость{% endif %}', '{{reply.id}}')">
+                                                                        <button style="cursor:default;">#{{forloop.counter}}</button>
+                                                                    <div class="comments__rate">
+                                                                        <button style="cursor:default;">#{{comment.index_number}}</button>
+<!--                                                                        <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
+<!--                                                                        <button type="button"><i class="icon ion-md-thumbs-down"></i>3</button>-->
+                                                                    </div>
+                                                                    <a href="#formComment" onclick="addComment('{{comment.index_number}}-{{forloop.counter}}', '{{reply.id}}')">
                                                                         <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>
                                                                     </a>
                                                                 </div>
