@@ -72,3 +72,11 @@ function toggle_visibility(id)
             e.style.display = 'block';
     }
 // end show replies
+
+
+$(document).ready(function () {
+    const anchor = JSON.parse(document.getElementById("anchor").textContent);
+    if(anchor) {
+        location.hash = anchor;
+    };
+});

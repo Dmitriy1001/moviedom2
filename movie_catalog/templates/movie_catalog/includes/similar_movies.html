@@ -1,14 +1,16 @@
 {% load movie_tags movie_filters %}
 
 <div class="col-12 col-lg-4 col-xl-4">
+    {% get_similar_movies movie as similar_movies %}
     <div class="row">
         <!-- section title -->
-        <div class="col-12">
-            <h2 class="section__title section__title--sidebar">Вам также может понравиться...</h2>
-        </div>
+        {% if similar_movies %}
+            <div class="col-12">
+                <h2 class="section__title section__title--sidebar">Вам также может понравиться...</h2>
+            </div>
+        {% endif %}
         <!-- end section title -->
 
-        {% get_similar_movies movie as similar_movies %}
         {% for similar_movie in similar_movies %}
             <!-- card -->
             <div class="col-6 col-sm-4 col-lg-6">

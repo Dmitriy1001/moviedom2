@@ -150,8 +150,8 @@ class Search(MovieList):
 
 class MovieDetail(DetailView):
     extra_context = {'page': 'movie_detail'}
-    comments_per_page = 3
-    reviews_per_page = 2
+    comments_per_page = 10
+    reviews_per_page = 5
 
     def get_queryset(self):
         return (
@@ -207,6 +207,7 @@ class MovieDetail(DetailView):
         self.object = self.get_object()
         context = self.get_context_data()
         context['comment_form'] = form
+        context['anchor'] = '#formComment'
         return render(request, 'movie_catalog/movie_detail.html', context)
 
     @method_decorator(login_required)
@@ -237,7 +238,10 @@ class MovieDetail(DetailView):
         self.object = self.get_object()
         context = self.get_context_data()
         context['review_form'] = form
+        context.update({'tab': 'reviews', 'anchor': '#formReview'})
         return render(request, 'movie_catalog/movie_detail.html', context)
+
+
 
     def pagination(self, queryset, per_page, page_name):
         for i in range(len(queryset)):
@@ -249,11 +253,11 @@ class MovieDetail(DetailView):
     def reviews_info(self, reviews):
         try:
             user_reviewed = reviews.filter(user=self.request.user).exists()
-            try:
+            if user_reviewed:
                 user_review = reviews.get(user=self.request.user)
                 user_review_index = list(reviews).index(user_review) + 1
                 user_review_page_number = ceil(user_review_index / self.reviews_per_page)
-            except Review.DoesNotExist:
+            else:
                 user_review_page_number = None
         except TypeError:
             user_reviewed = False
@@ -261,7 +265,7 @@ class MovieDetail(DetailView):
         return {
             'user_reviewed': user_reviewed,
             'user_review_page_number': user_review_page_number,
-            'reviews': self.pagination(reviews, 3, 'rev_p')
+            'reviews': self.pagination(reviews, self.reviews_per_page, 'rev_p')
         }
 
     def get_context_data(self, **kwargs):
@@ -271,7 +275,7 @@ class MovieDetail(DetailView):
         context['tab'] = self.request.GET.get('tab')
         context['none_parent_comments'] = self.pagination(
             movie.comments.filter(parent=None).order_by('-posted_at'),
-            10,
+            self.comments_per_page,
             'com_p',
         )
         reviews = movie.reviews.all()

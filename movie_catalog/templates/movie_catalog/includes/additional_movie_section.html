@@ -1,5 +1,7 @@
 {% load static movie_filters %}
 
+{{anchor|json_script:"anchor"}}
+
 <section class="content" id="tabs">
     <div class="content__head">
         <div class="container">
@@ -142,13 +144,12 @@
                                                                     </p>
                                                                 </div>
                                                                 <div class="comments__actions">
-                                                                        <button style="cursor:default;">#{{forloop.counter}}</button>
                                                                     <div class="comments__rate">
-                                                                        <button style="cursor:default;">#{{comment.index_number}}</button>
+                                                                        <button style="cursor:default;">#{{comment.index_number}}.{{forloop.counter}}</button>
 <!--                                                                        <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
 <!--                                                                        <button type="button"><i class="icon ion-md-thumbs-down"></i>3</button>-->
                                                                     </div>
-                                                                    <a href="#formComment" onclick="addComment('{{comment.index_number}}-{{forloop.counter}}', '{{reply.id}}')">
+                                                                    <a href="#formComment" onclick="addComment('{{comment.index_number}}.{{forloop.counter}}', '{{reply.id}}')">
                                                                         <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>
                                                                     </a>
                                                                 </div>
