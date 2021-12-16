@@ -30,8 +30,8 @@ function showMoreLess(model, id, more='...', less='...') {
 
 
 // reply for comment
-function addComment(commentNumber, id) {
-    document.getElementById("parent").value = id;
+function addReply(commentNumber, id) {
+    document.getElementById("com_parent").value = id;
 	document.getElementById("commentText").innerText = `#${commentNumber}. `;
 };
 // end reply for comment
@@ -89,50 +89,53 @@ function toggle_visibility(id)
 
 
 // edit comment & replies
-function editPost(model, id) {
-    // Get the modal
-    var modal = document.getElementById('editWindow' + '-' + model + id);
-    // Get the button that opens the modal
-    var btn = document.getElementById('editBtn' + '-' + model + id);
-    // Get the <span> element that closes the modal
-    var close = document.getElementById('editClose' + '-' + model + id);
-
-    if (modal.style.display == 'block')
-          modal.style.display = 'none';
-    else
-          modal.style.display = 'block';
-
-    // When the user clicks on <span> (x), close the modal
-    close.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-}
-// end edit comment & replies
-
-
-function editComment(model, id) {
+function editObject(model, id) {
+    var objSection = document.getElementById(model + 'Section' + '-' + id);
     var objText = document.getElementById(model + 'Text' + '-' + id);
     var objEdit = document.getElementById(model + 'Edit' + '-' + id);
+    var objDelete = document.getElementById(model + 'Del' + '-' + id);
+    var objActions = document.getElementById(model + 'Actions' + '-' + id);
+
     var buttonCancel = document.getElementById(model + 'BtnCnl' + '-' + id);
     var buttonSave = document.getElementById(model + 'BtnSave' + '-' + id);
+    var buttonDelete = document.getElementById(model + 'BtnDel' + '-' + id);
 
     if (objText.style.display == 'block') {
         objText.style.display = 'none';
         objEdit.style.display = 'block';
         buttonCancel.innerHTML = 'Отменить';
         buttonSave.style.display = 'block';
+        buttonDelete.style.display = 'none';
     }
     else {
         objText.style.display = 'block';
         objEdit.style.display = 'none';
         buttonCancel.innerHTML = 'Изменить';
         buttonSave.style.display = 'none';
+        buttonDelete.style.display = 'block';
     }
+
 }
+// end edit comment & replies
+
+
+// delete comment & replies
+function deleteObject(model, id) {
+    var objSection = document.getElementById(model + 'Section' + '-' + id);
+    var objDelete = document.getElementById(model + 'Del' + '-' + id);
+    var objActions = document.getElementById(model + 'Actions' + '-' + id);
+
+    if (objSection.style.display == 'block') {
+        objSection.style.display = 'none';
+        objActions.style.display = 'none';
+        objDelete.style.display = 'block';
+    }
+
+    else {
+        objDelete.style.display = 'none';
+        objSection.style.display = 'block';
+        objActions.style.display = '';
+    }
+
+}
+// end delete comment & replies

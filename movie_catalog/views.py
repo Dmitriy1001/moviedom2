@@ -167,14 +167,16 @@ class MovieDetail(DetailView):
         return self.get_queryset().get(slug=self.kwargs['movie_slug'])
 
     def post(self, request, **kwargs):
-        if 'star' in request.POST:
+        params = request.POST
+        if 'star' in params:
             return self.post_review(request)
+        elif 'del' in params:
+            return self.delete_obj(request)
         else:
             return (
                 self.post_comment(request) if not 'comment_id' in request.POST
                 else self.update_comment(request)
             )
-
 
     def post_comment(self, request, **kwargs):
         movie = self.get_object()
@@ -184,7 +186,7 @@ class MovieDetail(DetailView):
             try:
                 parent = Comment.objects.get(id=int(request.POST.get('parent')))
                 comment_parent = parent if not parent.parent else parent.parent
-            except ValueError:
+            except TypeError:
                 comment_parent = None
             if not comment_parent or (comment_parent and comment_parent.replies.count() < 10):
                 new_comment.parent = comment_parent
@@ -239,6 +241,22 @@ class MovieDetail(DetailView):
         context['edit'] = True
         context['edited_comment'] = comment.id
         return render(request, 'movie_catalog/movie_detail.html', context)
+
+    def delete_obj(self, request):
+        movie = self.get_object()
+        params = request.POST
+        page = params['page']
+        comment_id = int(params['com'])
+        if 'com' in params:
+            comment = Comment.objects.get(id=comment_id)
+            comment.delete()
+            messages.info(request, 'Комментарий удален')
+            return redirect(
+                '{}?tab=comments&com_p={}'.format(
+                    reverse('movie_detail', args=(movie.category.slug, movie.slug)),
+                    page,
+                )
+            )
 
 
     @method_decorator(login_required)

@@ -1,6 +1,6 @@
 <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formComment">
     {% csrf_token %}
-    <input type="hidden" name="parent" id="parent">
+    <input type="hidden" name="parent" id="com_parent">
     <input type="hidden" name="page" value="{{request.GET.com_p}}">
     {% if comment_form.text.errors %}
         <span class="sign__text" style="color:#ff55a5;"><b>{{comment_form.text.errors}}</b></span>

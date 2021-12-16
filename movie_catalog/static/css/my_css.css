@@ -146,3 +146,13 @@
     position: relative;
 
 }
+
+.btn-cnl__del {
+    color: grey;
+    cursor: pointer;
+}
+
+.btn-del {
+    color: #ff55a5;
+    cursor: pointer;
+}
