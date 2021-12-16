@@ -1,0 +1,11 @@
+<form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="form" id="formComment">
+    {% csrf_token %}
+    <input type="hidden" name="parent" id="parent">
+    <input type="hidden" name="page" value="{{request.GET.com_p}}">
+    {% if comment_form.text.errors %}
+        <span class="sign__text" style="color:#ff55a5;"><b>{{comment_form.text.errors}}</b></span>
+    {% endif %}
+    <br>
+    <textarea name="text" id="commentText" class="form__textarea" placeholder="Ваш комментарий" required minlength="10"></textarea>
+    <button type="submit" class="form__btn">Добавить</button>
+</form>

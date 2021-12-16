@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -22,3 +22,7 @@ class SignIn(LoginView):
     form_class = AuthenticationForm
     template_name = 'account/signin.html'
     redirect_authenticated_user = True
+
+
+def test(request):
+    return render(request, 'account/modal_form.html')

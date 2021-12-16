@@ -1,3 +1,17 @@
+$(document).ready(function () {
+    var location = JSON.parse(document.getElementById("location").textContent);
+    var edited_comment = JSON.parse(document.getElementById("edited_comment").textContent);
+    if(location) {
+        window.location.href = location;
+    };
+
+    if(edited_comment) {
+        window.location.hash = 'com' + edited_comment;
+    };
+
+});
+
+
 function showMoreLess(model, id, more='...', less='...') {
   var dots = document.getElementById(model + "-dots" + id);
   var moreText = document.getElementById(model + "-more" + id);
@@ -5,7 +19,7 @@ function showMoreLess(model, id, more='...', less='...') {
 
   if (dots.style.display === "none") {
     dots.style.display = "inline";
-    btnText.innerHTML = more
+    btnText.innerHTML = more;
     moreText.style.display = "none";
   } else {
      dots.style.display = "none";
@@ -74,9 +88,51 @@ function toggle_visibility(id)
 // end show replies
 
 
-$(document).ready(function () {
-    const anchor = JSON.parse(document.getElementById("anchor").textContent);
-    if(anchor) {
-        location.hash = anchor;
-    };
-});
+// edit comment & replies
+function editPost(model, id) {
+    // Get the modal
+    var modal = document.getElementById('editWindow' + '-' + model + id);
+    // Get the button that opens the modal
+    var btn = document.getElementById('editBtn' + '-' + model + id);
+    // Get the <span> element that closes the modal
+    var close = document.getElementById('editClose' + '-' + model + id);
+
+    if (modal.style.display == 'block')
+          modal.style.display = 'none';
+    else
+          modal.style.display = 'block';
+
+    // When the user clicks on <span> (x), close the modal
+    close.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+}
+// end edit comment & replies
+
+
+function editComment(model, id) {
+    var objText = document.getElementById(model + 'Text' + '-' + id);
+    var objEdit = document.getElementById(model + 'Edit' + '-' + id);
+    var buttonCancel = document.getElementById(model + 'BtnCnl' + '-' + id);
+    var buttonSave = document.getElementById(model + 'BtnSave' + '-' + id);
+
+    if (objText.style.display == 'block') {
+        objText.style.display = 'none';
+        objEdit.style.display = 'block';
+        buttonCancel.innerHTML = 'Отменить';
+        buttonSave.style.display = 'block';
+    }
+    else {
+        objText.style.display = 'block';
+        objEdit.style.display = 'none';
+        buttonCancel.innerHTML = 'Изменить';
+        buttonSave.style.display = 'none';
+    }
+}

@@ -170,7 +170,11 @@ class MovieDetail(DetailView):
         if 'star' in request.POST:
             return self.post_review(request)
         else:
-            return self.post_comment(request)
+            return (
+                self.post_comment(request) if not 'comment_id' in request.POST
+                else self.update_comment(request)
+            )
+
 
     def post_comment(self, request, **kwargs):
         movie = self.get_object()
@@ -210,6 +214,33 @@ class MovieDetail(DetailView):
         context['anchor'] = '#formComment'
         return render(request, 'movie_catalog/movie_detail.html', context)
 
+    def update_comment(self, request, **kwargs):
+        movie = self.get_object()
+        comment = Comment.objects.get(id=request.POST['comment_id'])
+        comment_update_form = CommentForm(request.POST, instance=comment)
+        page = request.POST.get('page', '1')
+        if comment_update_form.is_valid():
+            edited_comment = comment_update_form.save()
+            extra_tags = edited_comment.id
+            messages.info(request, 'Комментарий изменен', extra_tags=extra_tags)
+            return redirect(
+                '{}?tab=comments&com_p={}#com{}'.format(
+                    reverse('movie_detail', args=(movie.category.slug, movie.slug)),
+                    page,
+                    extra_tags,
+                )
+            )
+        self.object = self.get_object()
+        context = self.get_context_data()
+        context['none_parent_comments'] = (
+            context['none_parent_comments'].paginator.get_page(int(page))
+        )
+        context['comment_update_form'] = comment_update_form
+        context['edit'] = True
+        context['edited_comment'] = comment.id
+        return render(request, 'movie_catalog/movie_detail.html', context)
+
+
     @method_decorator(login_required)
     def post_review(self, request, **kwargs):
         movie = self.get_object()
@@ -240,8 +271,6 @@ class MovieDetail(DetailView):
         context['review_form'] = form
         context.update({'tab': 'reviews', 'anchor': '#formReview'})
         return render(request, 'movie_catalog/movie_detail.html', context)
-
-
 
     def pagination(self, queryset, per_page, page_name):
         for i in range(len(queryset)):
