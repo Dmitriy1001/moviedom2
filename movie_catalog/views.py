@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -217,14 +217,19 @@ class MovieDetail(DetailView):
         return render(request, 'movie_catalog/movie_detail.html', context)
 
     def update_comment(self, request, **kwargs):
+        print(request.POST, '!!!')
         movie = self.get_object()
         comment = Comment.objects.get(id=request.POST['comment_id'])
         comment_update_form = CommentForm(request.POST, instance=comment)
         page = request.POST.get('page', '1')
         if comment_update_form.is_valid():
             edited_comment = comment_update_form.save()
-            extra_tags = edited_comment.id
-            messages.info(request, 'Комментарий изменен', extra_tags=extra_tags)
+            extra_tags = request.POST.get('reply_parent', edited_comment.id)
+            msg = (
+                'Комментарий изменен' if not 'reply_number' in request.POST else
+                f'Ответ №{request.POST["reply_number"]} изменен'
+            )
+            messages.info(request, msg, extra_tags=extra_tags)
             return redirect(
                 '{}?tab=comments&com_p={}#com{}'.format(
                     reverse('movie_detail', args=(movie.category.slug, movie.slug)),
@@ -239,7 +244,9 @@ class MovieDetail(DetailView):
         )
         context['comment_update_form'] = comment_update_form
         context['edit'] = True
-        context['edited_comment'] = comment.id
+        context['edit_reply'] = True if 'reply_parent' in request.POST else False
+        context['edited_comment'] = int(request.POST.get('reply_parent', comment.id))
+        context['edited_reply'] = request.POST.get('comment_id')
         return render(request, 'movie_catalog/movie_detail.html', context)
 
     def delete_obj(self, request):
@@ -333,4 +340,3 @@ class MovieDetail(DetailView):
 class About(TemplateView):
     template_name = 'movie_catalog/about.html'
     extra_context = {'page': 'about'}
-
