@@ -186,7 +186,7 @@ class MovieDetail(DetailView):
             try:
                 parent = Comment.objects.get(id=int(request.POST.get('parent')))
                 comment_parent = parent if not parent.parent else parent.parent
-            except TypeError:
+            except (ValueError, TypeError):
                 comment_parent = None
             if not comment_parent or (comment_parent and comment_parent.replies.count() < 10):
                 new_comment.parent = comment_parent
@@ -217,7 +217,6 @@ class MovieDetail(DetailView):
         return render(request, 'movie_catalog/movie_detail.html', context)
 
     def update_comment(self, request, **kwargs):
-        print(request.POST, '!!!')
         movie = self.get_object()
         comment = Comment.objects.get(id=request.POST['comment_id'])
         comment_update_form = CommentForm(request.POST, instance=comment)
@@ -250,21 +249,22 @@ class MovieDetail(DetailView):
         return render(request, 'movie_catalog/movie_detail.html', context)
 
     def delete_obj(self, request):
-        movie = self.get_object()
         params = request.POST
         page = params['page']
+        parent = params.get('parent', '')
         comment_id = int(params['com'])
         if 'com' in params:
             comment = Comment.objects.get(id=comment_id)
             comment.delete()
             messages.info(request, 'Комментарий удален')
-            return redirect(
-                '{}?tab=comments&com_p={}'.format(
-                    reverse('movie_detail', args=(movie.category.slug, movie.slug)),
-                    page,
-                )
+            self.object = self.get_object()
+            context = self.get_context_data()
+            context['none_parent_comments'] = (
+                context['none_parent_comments'].paginator.get_page(int(page))
             )
-
+            context['edited_comment'] = parent
+            context['deleted_reply_parent'] = parent
+            return render(request, 'movie_catalog/movie_detail.html', context)
 
     @method_decorator(login_required)
     def post_review(self, request, **kwargs):

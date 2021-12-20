@@ -29,9 +29,10 @@
                                 </span>
                                 <span class="comments__time">{{comment.posted_at}}</span>
                             </div>
+
+                            <!-- comment body -->
                             <div class="{% if comment.user == user %}user__review{% endif %}" id="comSection-{{comment.id}}" style="display:block;">
 
-                                <!-- comment body -->
                                 <p class="reviews__text" id="comText-{{comment.id}}" style="display:{% if edit and not edit_reply and edited_comment == comment.id %}none{% else %}block;{% endif %}">
                                         {% if comment.text|split_text|length <= 100 %}
                                             {{comment.text}}
@@ -84,6 +85,11 @@
                                     {% endif %}
                                 {% endfor %}
 
+                                {% if deleted_reply_parent|add:0 == comment.id %}
+                                    <span class="toast">Ответ удален</span>
+                                    &nbsp;
+                                {% endif %}
+
                                 <!-- edit comment -->
                                 <button type="button" id="comBtnDel-{{comment.id}}" onclick="deleteObject('com', {{comment.id}})" style="display:{% if edit and not edit_reply and edited_comment == comment.id %}none{% else %}block;{% endif %}">
                                     Удалить
@@ -128,9 +134,10 @@
                                             </span>
                                             <span class="comments__time">{{reply.posted_at}}</span>
                                         </div>
-                                        <div class="{% if reply.user == user %}user__review{% endif %}">
 
-                                            <!-- reply body -->
+                                        <!-- reply body -->
+                                        <div class="{% if reply.user == user %}user__review{% endif %}" id="repSection-{{reply.id}}" style="display:block;">
+
                                             <p class="reviews__text" id="repText-{{reply.id}}" style="display:{% if edit and edited_reply|add:0 == reply.id %}none{% else %}block;{% endif %}">
                                                 {% if reply.text|split_text|length <= 100 %}
                                                     {{reply.text}}
@@ -155,10 +162,26 @@
                                                 <br>
                                                 <textarea name="text" class="form__textarea edit-form__text" placeholder="Ваш комментарий">{% if comment_update_form.data.text and edited_comment == reply.id %}{{comment_update_form.data.text}}{% else %}{{reply.text}}{% endif %}</textarea>
                                             </form>
-                                            <!-- end reply body -->
-
                                         </div>
-                                        <div class="comments__actions">
+
+                                        <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="edit-form" id="repDel-{{reply.id}}" style="display:none;">
+                                             {% csrf_token %}
+                                             <input type="hidden" name="del">
+                                             <input type="hidden" name="parent" value="{{comment.id}}">
+                                            <input type="hidden" name="reply_number" value="{{forloop.counter}}">
+                                             <input type="hidden" name="com" value="{{reply.id}}">
+                                             <input type="hidden" name="page" value="{{none_parent_comments.number}}">
+                                             <p class="reviews__text">
+                                                 Вы уверены, что хотите удалить комментарий?<br>
+                                                 <span style="background:#2b2b31;">
+                                                     <button type="button" class="btn-cnl__del" onclick="deleteObject('rep', {{reply.id}})">ОТМЕНА</button> |
+                                                     <button type="submit" class="btn-del">УДАЛИТЬ</button>
+                                                 </span>
+                                             </p>
+                                        </form>
+                                        <!-- end reply body -->
+
+                                        <div class="comments__actions" id="repActions-{{reply.id}}">
                                             <div class="comments__rate">
                                                 <button style="cursor:default;">#{{comment.index_number}}.{{forloop.counter}}|{{reply.id}}</button>
                                                     <!--                                                                        <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
