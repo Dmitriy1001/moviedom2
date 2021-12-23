@@ -60,7 +60,7 @@
                              <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="edit-form" id="comDel-{{comment.id}}" style="display:none;">
                                  {% csrf_token %}
                                  <input type="hidden" name="del_com">
-                                 <input type="hidden" name="com" value="{{comment.id}}">
+                                 <input type="hidden" name="comment_id" value="{{comment.id}}">
                                  <input type="hidden" name="page" value="{{none_parent_comments.number}}">
                                  <p class="reviews__text">
                                      Вы уверены, что хотите удалить комментарий?<br>
@@ -74,7 +74,7 @@
 
                             <div class="comments__actions" id="comActions-{{comment.id}}">
                                 <div class="comments__rate">
-                                    <button style="cursor:default;">#{{comment.index_number}}|{{comment.id}}</button>
+                                    <button style="cursor:default;">#{{comment.index_number}}</button>
                                         <!--                                                            <button type="button"><i class="icon ion-md-thumbs-up"></i>12</button>-->
                                         <!--                                                            <button type="button">7<i class="icon ion-md-thumbs-down"></i></button>-->
                                 </div>
@@ -91,15 +91,17 @@
                                 {% endif %}
 
                                 <!-- edit comment -->
-                                <button type="button" id="comBtnDel-{{comment.id}}" onclick="deleteObject('com', {{comment.id}})" style="display:{% if edit and not edit_reply and edited_comment == comment.id %}none{% else %}block;{% endif %}">
-                                    Удалить
-                                </button>
-                                <button type="button" id="comBtnCnl-{{comment.id}}" onclick="editObject('com', {{comment.id}})">
-                                    {% if edit and edited_comment == comment.id and not edit_reply %}Отменить{% else %}Изменить{% endif %}
-                                </button>
-                                <button onclick="isValidForm('{{comment.id}}')" type="submit" id="comBtnSave-{{comment.id}}" form="comEdit-{{comment.id}}" style="display:{% if edit and edited_comment == comment.id and not edit_reply %}block{% else %}none;{% endif %}">
-                                     Сохранить
-                                </button>
+                                {% if comment.user == user %}
+                                    <button type="button" id="comBtnDel-{{comment.id}}" onclick="deleteObject('com', {{comment.id}})" style="display:{% if edit and not edit_reply and edited_comment == comment.id %}none{% else %}block;{% endif %}">
+                                        Удалить
+                                    </button>
+                                    <button type="button" id="comBtnCnl-{{comment.id}}" onclick="editObject('com', {{comment.id}})">
+                                        {% if edit and edited_comment == comment.id and not edit_reply %}Отменить{% else %}Изменить{% endif %}
+                                    </button>
+                                    <button onclick="isValidForm('{{comment.id}}')" type="submit" id="comBtnSave-{{comment.id}}" form="comEdit-{{comment.id}}" style="display:{% if edit and edited_comment == comment.id and not edit_reply %}block{% else %}none;{% endif %}">
+                                         Сохранить
+                                    </button>
+                                {% endif %}
                                 <!-- end edit comment -->
 
                                 {% if comment.replies.count %}
@@ -169,7 +171,7 @@
                                              <input type="hidden" name="del_com">
                                              <input type="hidden" name="parent" value="{{comment.id}}">
                                             <input type="hidden" name="reply_number" value="{{forloop.counter}}">
-                                             <input type="hidden" name="com" value="{{reply.id}}">
+                                             <input type="hidden" name="comment_id" value="{{reply.id}}">
                                              <input type="hidden" name="page" value="{{none_parent_comments.number}}">
                                              <p class="reviews__text">
                                                  Вы уверены, что хотите удалить комментарий?<br>
@@ -183,11 +185,12 @@
 
                                         <div class="comments__actions" id="repActions-{{reply.id}}">
                                             <div class="comments__rate">
-                                                <button style="cursor:default;">#{{comment.index_number}}.{{forloop.counter}}|{{reply.id}}</button>
+                                                <button style="cursor:default;">#{{comment.index_number}}.{{forloop.counter}}</button>
                                                     <!--                                                                        <button type="button"><i class="icon ion-md-thumbs-up"></i>8</button>-->
                                                     <!--                                                                        <button type="button"><i class="icon ion-md-thumbs-down"></i>3</button>-->
                                             </div>
                                             <!-- edit reply -->
+                                            {% if reply.user == user %}
                                                 <button type="button" id="repBtnDel-{{reply.id}}" onclick="deleteObject('rep', {{reply.id}})" style="display:{% if edited_reply|add:0 == reply.id %}none{% else %}block;{% endif %}">
                                                     Удалить
                                                 </button>
@@ -197,6 +200,7 @@
                                                 <button type="submit" id="repBtnSave-{{reply.id}}" onclick="isValidForm('{{reply.id}}')" form="repEdit-{{reply.id}}" style="display:{% if edit and edited_reply|add:0 == reply.id %}block{% else %}none;{% endif %}">
                                                      Сохранить
                                                 </button>
+                                            {% endif %}
                                             <!-- end edit reply -->
                                             <a href="#formComment" onclick="addReply('{{comment.index_number}}.{{forloop.counter}}', '{{reply.id}}')">
                                                 <button type="button"><i class="icon ion-ios-share-alt"></i>Ответить</button>

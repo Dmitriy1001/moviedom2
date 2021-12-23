@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('movie_catalog.urls')),
 ]
 
+handler403 = handlers.handler403
 handler404 = handlers.handler404
 handler500 = handlers.handler500
 

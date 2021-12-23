@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, DetailView
 
+from movie_catalog.decorators import is_user_author
 from movie_catalog.forms import CommentForm, ReviewForm
 from movie_catalog.models import Movie, Category, Actor, Director, Country, Genre, Comment, Review, RatingStar
 
@@ -216,6 +217,8 @@ class MovieDetail(DetailView):
         context['anchor'] = '#formComment'
         return render(request, 'movie_catalog/movie_detail.html', context)
 
+    @method_decorator(login_required)
+    @method_decorator(is_user_author)
     def update_comment(self, request, **kwargs):
         movie = self.get_object()
         comment = Comment.objects.get(id=request.POST['comment_id'])
@@ -248,11 +251,13 @@ class MovieDetail(DetailView):
         context['edited_reply'] = request.POST.get('comment_id')
         return render(request, 'movie_catalog/movie_detail.html', context)
 
+    @method_decorator(login_required)
+    @method_decorator(is_user_author)
     def delete_comment(self, request):
         params = request.POST
         page = params['page']
         parent = params.get('parent', '')
-        comment_id = int(params['com'])
+        comment_id = int(params['comment_id'])
         comment = Comment.objects.get(id=comment_id)
         comment.delete()
         messages.info(request, 'Комментарий удален')
