@@ -170,8 +170,8 @@ class MovieDetail(DetailView):
         params = request.POST
         if 'star' in params:
             return self.post_review(request)
-        elif 'del' in params:
-            return self.delete_obj(request)
+        elif 'del_com' in params:
+            return self.delete_comment(request)
         else:
             return (
                 self.post_comment(request) if not 'comment_id' in request.POST
@@ -248,23 +248,22 @@ class MovieDetail(DetailView):
         context['edited_reply'] = request.POST.get('comment_id')
         return render(request, 'movie_catalog/movie_detail.html', context)
 
-    def delete_obj(self, request):
+    def delete_comment(self, request):
         params = request.POST
         page = params['page']
         parent = params.get('parent', '')
         comment_id = int(params['com'])
-        if 'com' in params:
-            comment = Comment.objects.get(id=comment_id)
-            comment.delete()
-            messages.info(request, 'Комментарий удален')
-            self.object = self.get_object()
-            context = self.get_context_data()
-            context['none_parent_comments'] = (
-                context['none_parent_comments'].paginator.get_page(int(page))
-            )
-            context['edited_comment'] = parent
-            context['deleted_reply_parent'] = parent
-            return render(request, 'movie_catalog/movie_detail.html', context)
+        comment = Comment.objects.get(id=comment_id)
+        comment.delete()
+        messages.info(request, 'Комментарий удален')
+        self.object = self.get_object()
+        context = self.get_context_data()
+        context['none_parent_comments'] = (
+            context['none_parent_comments'].paginator.get_page(int(page))
+        )
+        context['edited_comment'] = parent
+        context['deleted_reply_parent'] = parent
+        return render(request, 'movie_catalog/movie_detail.html', context)
 
     @method_decorator(login_required)
     def post_review(self, request, **kwargs):

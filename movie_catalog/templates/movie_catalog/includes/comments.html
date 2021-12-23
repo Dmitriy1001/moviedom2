@@ -53,13 +53,13 @@
                                             <span class="" style="color:#ff55a5;"><b>{{comment_update_form.text.errors}}</b></span>
                                         {% endif %}
                                         <br>
-                                        <textarea name="text" class="form__textarea edit-form__text" placeholder="Ваш комментарий">{% if comment_update_form.data.text and not edited_reply and edited_comment == comment.id %}{{comment_update_form.data.text}}{% else %}{{comment.text}}{% endif %}</textarea>
+                                        <textarea name="text" id="commentText{{comment.id}}" class="form__textarea edit-form__text" placeholder="Ваш комментарий" required minlength="10">{% if comment_update_form.data.text and not edited_reply and edited_comment == comment.id %}{{comment_update_form.data.text}}{% else %}{{comment.text}}{% endif %}</textarea>
                                     </form>
                             </div>
 
                              <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="edit-form" id="comDel-{{comment.id}}" style="display:none;">
                                  {% csrf_token %}
-                                 <input type="hidden" name="del">
+                                 <input type="hidden" name="del_com">
                                  <input type="hidden" name="com" value="{{comment.id}}">
                                  <input type="hidden" name="page" value="{{none_parent_comments.number}}">
                                  <p class="reviews__text">
@@ -97,7 +97,7 @@
                                 <button type="button" id="comBtnCnl-{{comment.id}}" onclick="editObject('com', {{comment.id}})">
                                     {% if edit and edited_comment == comment.id and not edit_reply %}Отменить{% else %}Изменить{% endif %}
                                 </button>
-                                <button type="submit" id="comBtnSave-{{comment.id}}" form="comEdit-{{comment.id}}" style="display:{% if edit and edited_comment == comment.id and not edit_reply %}block{% else %}none;{% endif %}">
+                                <button onclick="isValidForm('{{comment.id}}')" type="submit" id="comBtnSave-{{comment.id}}" form="comEdit-{{comment.id}}" style="display:{% if edit and edited_comment == comment.id and not edit_reply %}block{% else %}none;{% endif %}">
                                      Сохранить
                                 </button>
                                 <!-- end edit comment -->
@@ -160,13 +160,13 @@
                                                     <span class="" style="color:#ff55a5;"><b>{{comment_update_form.text.errors}}</b></span>
                                                 {% endif %}
                                                 <br>
-                                                <textarea name="text" class="form__textarea edit-form__text" placeholder="Ваш комментарий">{% if comment_update_form.data.text and edited_comment == reply.id %}{{comment_update_form.data.text}}{% else %}{{reply.text}}{% endif %}</textarea>
+                                                <textarea id="commentText{{reply.id}}" name="text" class="form__textarea edit-form__text" placeholder="Ваш комментарий" required minlength="10">{% if comment_update_form.data.text and edited_comment == reply.id %}{{comment_update_form.data.text}}{% else %}{{reply.text}}{% endif %}</textarea>
                                             </form>
                                         </div>
 
                                         <form action="{% url 'movie_detail' category=movie.category.slug movie_slug=movie.slug %}" method="post" class="edit-form" id="repDel-{{reply.id}}" style="display:none;">
                                              {% csrf_token %}
-                                             <input type="hidden" name="del">
+                                             <input type="hidden" name="del_com">
                                              <input type="hidden" name="parent" value="{{comment.id}}">
                                             <input type="hidden" name="reply_number" value="{{forloop.counter}}">
                                              <input type="hidden" name="com" value="{{reply.id}}">
@@ -194,7 +194,7 @@
                                                 <button type="button" id="repBtnCnl-{{reply.id}}" onclick="editObject('rep', {{reply.id}})">
                                                     {% if edited_reply|add:0 == reply.id %}Отменить{% else %}Изменить{% endif %}
                                                 </button>
-                                                <button type="submit" id="repBtnSave-{{reply.id}}" form="repEdit-{{reply.id}}" style="display:{% if edit and edited_reply|add:0 == reply.id %}block{% else %}none;{% endif %}">
+                                                <button type="submit" id="repBtnSave-{{reply.id}}" onclick="isValidForm('{{reply.id}}')" form="repEdit-{{reply.id}}" style="display:{% if edit and edited_reply|add:0 == reply.id %}block{% else %}none;{% endif %}">
                                                      Сохранить
                                                 </button>
                                             <!-- end edit reply -->
