@@ -5,7 +5,7 @@ from .models import Movie, Category, Genre, Country, Director, Actor, Comment, R
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    ...
+    list_display = ('title', 'poster')
 
 
 @admin.register(Category)

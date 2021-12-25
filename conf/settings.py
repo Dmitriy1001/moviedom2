@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'embed_video',
     'movie_catalog.apps.MovieCatalogConfig',
     'account.apps.AccountConfig',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'signin'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+#S3 BUCKETS CONFIG
+AWS_ACCESS_KEY_ID = 'AKIAXT2SGO67IWNIP5XP'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'moviedom2'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'movie_catalog/static/movie_catalog'),
+    os.path.join(BASE_DIR, 'account/static/account'),
+]
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'conf.storage_backends.MediaStorage'
+AWS_S3_REGION_NAME = 'us-east-2'
+
+

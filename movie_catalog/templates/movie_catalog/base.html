@@ -10,24 +10,24 @@
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 	 
 	<!-- CSS -->
-	<link rel="stylesheet" href="{% static 'css/bootstrap-reboot.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/bootstrap-grid.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/jquery.mCustomScrollbar.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
-	<link rel="stylesheet" href="{% static 'css/plyr.css' %}">
-	<link rel="stylesheet" href="{% static 'css/photoswipe.css' %}">
-	<link rel="stylesheet" href="{% static 'css/default-skin.css' %}">
-	<link rel="stylesheet" href="{% static 'css/main.css' %}">
-	<link rel="stylesheet" href="{% static 'css/my_css.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/bootstrap-reboot.min.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/bootstrap-grid.min.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/jquery.mCustomScrollbar.min.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/nouislider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/ionicons.min.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/plyr.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/photoswipe.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/default-skin.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/main.css' %}">
+	<link rel="stylesheet" href="{% static 'movie_catalog/css/my_css.css' %}">
 
 	<!-- Favicons -->
-	<link rel="icon" type="image/png" href="{% static 'icon/favicon-32x32.png' %}" sizes="32x32">
-	<link rel="apple-touch-icon" href="{% static 'icon/favicon-32x32.png' %}">
-	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'icon/apple-touch-icon-72x72.png' %}">
-	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'icon/apple-touch-icon-114x114.png' %}">
-	<link rel="apple-touch-icon" sizes="144x144" href="{% static 'icon/apple-touch-icon-144x144.png' %}">
+	<link rel="icon" type="image/png" href="{% static 'movie_catalog/icon/favicon-32x32.png' %}" sizes="32x32">
+	<link rel="apple-touch-icon" href="{% static 'movie_catalog/icon/favicon-32x32.png' %}">
+	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'movie_catalog/icon/apple-touch-icon-72x72.png' %}">
+	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'movie_catalog/icon/apple-touch-icon-114x114.png' %}">
+	<link rel="apple-touch-icon" sizes="144x144" href="{% static 'movie_catalog/icon/apple-touch-icon-144x144.png' %}">
 
 	<meta name="description" content="">
 	<meta name="keywords" content="">
@@ -46,7 +46,7 @@
 						<div class="header__content">
 							<!-- header logo -->
 							<a href="{% url 'index' %}" class="header__logo">
-								<img src="{% static 'img/logo2.svg' %}" alt="">
+								<img src="{% static 'movie_catalog/img/logo2.svg' %}" alt="">
 							</a>
 							<!-- end header logo -->
 
@@ -86,18 +86,6 @@
 										О нас
 									</a>
 								</li>
-
-								<!-- dropdown -->
-								<li class="dropdown header__nav-item">
-									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-										<li><a href="">About</a></li>
-										<li><a href="">Sign In</a></li>
-										<li><a href="">Sign Up</a></li>
-										<li><a href="">404 Page</a></li>
-									</ul>
-								</li>
-								<!-- end dropdown -->
 							</ul>
 							<!-- end header nav -->
 
@@ -114,7 +102,7 @@
 											{% if user.profile.avatar %}
 												<img src="{{user.profile.avatar.url}}" class="main_page__avatar">
 											{% else %}
-												<img src="{% static 'img/none_avatar.jpg' %}" class="main_page__avatar">
+												<img src="{% static 'movie_catalog/img/none_avatar.jpg' %}" class="main_page__avatar">
 											{% endif %}
 										</a>
 										<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
@@ -160,8 +148,8 @@
 				<div class="col-12 col-md-3">
 					<h6 class="footer__title">Скачать наше приложение</h6>
 					<ul class="footer__app">
-						<li><a href="#"><img src="{% static 'img/Download_on_the_App_Store_Badge.svg' %}" alt=""></a></li>
-						<li><a href="#"><img src="{% static 'img/google-play-badge.png' %}" alt=""></a></li>
+						<li><a href="#"><img src="{% static 'movie_catalog/img/Download_on_the_App_Store_Badge.svg' %}" alt=""></a></li>
+						<li><a href="#"><img src="{% static 'movie_catalog/img/google-play-badge.png' %}" alt=""></a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -222,19 +210,19 @@
 	<!-- end footer -->
 
 	<!-- JS -->
-	<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-	<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
-	<script src="{% static 'js/jquery.mousewheel.min.js' %}"></script>
-	<script src="{% static 'js/jquery.mCustomScrollbar.min.js' %}"></script>
-	<script src="{% static 'js/wNumb.js' %}"></script>
-	<script src="{% static 'js/nouislider.min.js' %}"></script>
-	<script src="{% static 'js/plyr.min.js' %}"></script>
-	<script src="{% static 'js/jquery.morelines.min.js' %}"></script>
-	<script src="{% static 'js/photoswipe.min.js' %}"></script>
-	<script src="{% static 'js/photoswipe-ui-default.min.js' %}"></script>
-	<script src="{% static 'js/main.js' %}"></script>
-	<script src="{% static 'js/my_js.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/jquery.mousewheel.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/jquery.mCustomScrollbar.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/wNumb.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/nouislider.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/plyr.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/jquery.morelines.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/photoswipe.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/photoswipe-ui-default.min.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/main.js' %}"></script>
+	<script src="{% static 'movie_catalog/js/my_js.js' %}"></script>
 
 </body>
 </html>

@@ -17,7 +17,7 @@
                         <li class="comments__item" >
                             <div class="comments__autor">
                                 {% if not comment.user.profile.avatar %}
-                                    <img class="comments__avatar" src="{% static 'img/none_avatar.jpg' %}" alt="">
+                                    <img class="comments__avatar" src="{% static 'movie_catalog/img/none_avatar.jpg' %}" alt="">
                                 {% else %}
                                     <img class="comments__avatar" src="{{comment.user.profile.avatar.url}}" alt="">
                                 {% endif %}
@@ -124,7 +124,7 @@
                                     <li class="comments__item comments__item--answer">
                                         <div class="comments__autor">
                                             {% if not reply.user.profile.avatar %}
-                                                <img class="comments__avatar" src="{% static 'img/none_avatar.jpg' %}" alt="">
+                                                <img class="comments__avatar" src="{% static 'movie_catalog/img/none_avatar.jpg' %}" alt="">
                                             {% else %}
                                                 <img class="comments__avatar" src="{{reply.user.profile.avatar.url}}" alt="">
                                             {% endif %}
