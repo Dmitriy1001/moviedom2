@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+import environ
+
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,9 +91,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'MOVIEDOM2',
-        'USER': 'postgres',
-        'PASSWORD': 'W47v7WJVgZcSjkW',
-        'HOST': 'database-1.ctdr2nd6psxx.us-east-2.rds.amazonaws.com',
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
         'PORT': '5432',
     }
 }
@@ -145,9 +150,10 @@ LOGIN_URL = 'signin'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 
+
 #S3 BUCKETS CONFIG
-AWS_ACCESS_KEY_ID = 'AKIAXT2SGO67IWNIP5XP'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'moviedom2'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {

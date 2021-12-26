@@ -5,6 +5,7 @@ certifi==2021.10.8
 charset-normalizer==2.0.7
 Django==3.2.9
 django-embed-video==1.4.0
+django-environ==0.8.1
 django-storages==1.12.3
 idna==3.3
 jmespath==0.10.0
